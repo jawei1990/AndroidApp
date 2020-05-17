@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:background="#000"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/btnOn"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_below="@+id/tv"
+        android:text="On" />
+
+    <Button
+        android:id="@+id/btnOff"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_below="@+id/btnOn"
+        android:text="Off" />
+
+    <Button
+        android:id="@+id/btnShot"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_below="@+id/btnOff"
+        android:text="One Shot" />
+
+    <Button
+        android:id="@+id/btnShotCons"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_below="@+id/btnShot"
+        android:text="C Shot" />
+
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_below="@+id/btnShotCons"
+        android:text="Stop" />
+</RelativeLayout>
