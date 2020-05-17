@@ -15,16 +15,16 @@
 
 2. android.support.v4.content.FileProvider not found in AndroidManifest.xml
 	Hence, I change android.support.v4.content.FileProvider to androidx.core.content.FileProvider.
-```
+````
 	<provider 
 	android:name="androidx.core.content.FileProvider"
 	android:authorities="${applicationId}.fileprovider"
 	android:exported="false"
 	android:grantUriPermissions="true"> 
 	</provider>
-```
-
-	Also modify the build.gradle(app) appcompat to "v7:28.0.0"
+````
+	
+Also modify the build.gradle(app) appcompat to "v7:28.0.0"
 
 # Reference
 [Codelabs.developers](https://codelabs.developers.google.com/codelabs/sceneform-intro/index.html?index=..%2F..io2018#0)
