@@ -1,6 +1,24 @@
 # ArCore_SceneformDetect
  This application shows a gallery of objects that can be placed, or anchored in the augmented world. You can then take a photo of the AR scene and save it to Photos.
  
+# Import ARCore
+
+1. Add `classpath 'com.google.ar.sceneform:plugin:1.15.0'` in build.gradle(Project) dependencies
+
+2. Add in build.gradle(App) dependencies
+````
+implementation 'com.google.ar:core:1.15.0'
+implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
+implementation 'com.google.ar.sceneform:core:1.15.0'
+````
+
+3. Add in manifest.xml
+````
+ <uses-feature
+        android:name="android.hardware.camera.ar"
+        android:required="true" />
+````
+ 
 # Problem what I'd met
 1. [E/ACameraMetadata: getConstEntry: cannot find metadata tag](https://github.com/google-ar/arcore-android-sdk/issues/982)
 
