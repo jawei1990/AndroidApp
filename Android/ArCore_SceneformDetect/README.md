@@ -12,11 +12,19 @@ implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
 implementation 'com.google.ar.sceneform:core:1.15.0'
 ````
 
-3. Add in manifest.xml
+3. Add below in manifest.xml
 ````
  <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
+````
+````
+<application
+....>
+	<meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+</application>
 ````
  
 # Problem what I'd met
