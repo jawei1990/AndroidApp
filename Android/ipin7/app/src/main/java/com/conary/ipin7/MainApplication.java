@@ -7,10 +7,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.conary.ipin7.utils.Database;
+
 public class MainApplication extends Application
 {
-    private static MainApplication mInstance;
     public static Activity mActivity;
+    public static MainApplication mInstance;
+    public Database mDataBase;
+
     public static synchronized MainApplication getInstance()
     {
         return mInstance;
@@ -22,7 +26,15 @@ public class MainApplication extends Application
         super.onCreate();
         mInstance =this;
 
+        initDataBase();
+
         registerActivityCallbackToCheckIfAppIsRunning();
+    }
+
+    void initDataBase()
+    {
+        mDataBase = new Database(this);
+        mDataBase.open();
     }
 
     private void registerActivityCallbackToCheckIfAppIsRunning() {
