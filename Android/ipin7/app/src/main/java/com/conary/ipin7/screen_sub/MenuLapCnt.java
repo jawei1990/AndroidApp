@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
 
     private RelativeLayout guideLayout, displayLayout;
     private final int MaxInputLen = 4;
+    private View listTitle;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,11 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         BtnBack.setOnClickListener(this);
         BtnKeyDel.setOnClickListener(this);
         BtnFinish.setOnClickListener(this);
+
+        listView = findViewById(R.id.cnt_listView);
+        listTitle = (View) getLayoutInflater().inflate(R.layout.cnt_list_title,null);
+        listView.addHeaderView(listTitle);
+        listView.setAdapter(null);
     }
 
     @Override

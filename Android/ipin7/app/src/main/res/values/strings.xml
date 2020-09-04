@@ -12,6 +12,11 @@
     <string name="Lada_off">關</string>
     <string name="lada_reset">歸零</string>
 
+    <string name="StrTime">時間</string>
+    <string name="StrMsg">訊息</string>
+    <string name="StrSpeed">速度</string>
+    <string name="Stridx">筆數</string>
+
     <string name="cnt_del">歸零</string>
     <string name="cnt_reset">歸零</string>
     <string name="cnt_enter_dis">輸入單圈距離(m):  </string>

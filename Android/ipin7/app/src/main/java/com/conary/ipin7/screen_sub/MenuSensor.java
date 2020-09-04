@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.conary.ipin7.R;
 import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.view.ScreenScale;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuSensor extends Activity implements View.OnClickListener
 {
@@ -22,6 +26,10 @@ public class MenuSensor extends Activity implements View.OnClickListener
 
     private RelativeLayout guideLayout, displayLayout;
     private LinearLayout BtnDel;
+    private ListView listView;
+    private View listTitle;
+
+    private List<ListSensor> sensorList= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,15 @@ public class MenuSensor extends Activity implements View.OnClickListener
 
         BtnDel = findViewById(R.id.sen_btnDel);
         BtnDel.setOnClickListener(this);
+
+        // ListView example
+        /*** https://www.itread01.com/content/1546974733.html
+         * http://www.wenyen.idv.tw/2018/04/program-androidstudio-20180419-listview-with-Header-And-Footer.html
+        */
+        listView = findViewById(R.id.sen_listView);
+        listTitle = (View) getLayoutInflater().inflate(R.layout.sen_list_title,null);
+        listView.addHeaderView(listTitle);
+        listView.setAdapter(null);
     }
 
     @Override
