@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/screen_radar"
+    android:background="#000"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="1920px"
+        android:layout_height="1080px"
+        android:background="@color/light_orange">
+
+        <RelativeLayout
+            android:id="@+id/guideLayout"
+            android:layout_width="1920px"
+            android:layout_height="1080px"
+            android:layout_marginTop="50px"
+            android:layout_marginLeft="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginBottom="50px"
+            android:background="@drawable/xml_ladar_page">
+            <ImageView
+                android:layout_width="1400px"
+                android:layout_height="500px"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/png_lada_gu_1"/>
+            <ImageView
+                android:id="@+id/BtnNext"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/xml_btn_ok" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/settingLayout"
+            android:layout_width="1920px"
+            android:layout_height="1080px"
+            android:layout_marginTop="50px"
+            android:layout_marginLeft="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginBottom="50px"
+            android:visibility="invisible"
+            android:background="@drawable/xml_ladar_page">
+
+            <LinearLayout
+                android:id="@+id/leftLayout"
+                android:layout_width="960px"
+                android:layout_height="980px"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="50px"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="960px"
+                    android:layout_height="125px"
+                    android:gravity="center"
+                    android:text="@string/near_dis"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="960px"
+                    android:layout_height="150px">
+
+                    <TextView
+                        android:id="@+id/ed_near"
+                        android:layout_width="672px"
+                        android:layout_height="100px"
+                        android:layout_alignParentLeft="true"
+                        android:background="@color/red"
+                        android:gravity="center"
+                        android:textColor="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/near_ring"
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/xml_btn_ring" />
+
+                    <TextView
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_toRightOf="@+id/ed_near"
+                        android:gravity="center"
+                        android:text="@string/cm"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="960px"
+                    android:layout_height="125px"
+                    android:gravity="center"
+                    android:text="@string/mid_dis"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="960px"
+                    android:layout_height="150px">
+
+                    <ImageView
+                        android:id="@+id/mid_ring"
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/xml_btn_ring" />
+
+                    <TextView
+                        android:id="@+id/ed_mid"
+                        android:layout_width="672px"
+                        android:layout_height="100px"
+                        android:layout_alignParentLeft="true"
+                        android:background="@color/orang_yellow"
+                        android:gravity="center"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_toRightOf="@+id/ed_mid"
+                        android:gravity="center"
+                        android:text="@string/cm"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="960px"
+                    android:layout_height="125px"
+                    android:gravity="center"
+                    android:text="@string/far_dis"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="960px"
+                    android:layout_height="150px">
+
+                    <ImageView
+                        android:id="@+id/far_ring"
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/xml_btn_ring" />
+
+                    <TextView
+                        android:id="@+id/ed_far"
+                        android:layout_width="672px"
+                        android:layout_height="100px"
+                        android:layout_alignParentLeft="true"
+                        android:background="@color/grass_green"
+                        android:gravity="center"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:layout_width="144px"
+                        android:layout_height="150px"
+                        android:layout_toRightOf="@+id/ed_far"
+                        android:gravity="center"
+                        android:text="@string/cm"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnStartRing"
+                android:layout_width="600px"
+                android:layout_height="650px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+             <ImageView
+                android:layout_width="500px"
+                android:layout_height="500px"
+                android:background="@drawable/xml_btn_lada_start" />
+            <TextView
+                    android:layout_width="500px"
+                    android:layout_height="150px"
+                    android:layout_below="@+id/RingView"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="100px"
+                    android:gravity="center"
+                    android:textColor="@color/xml_lada_start"
+                    android:textSize="20dp"
+                    android:autoSizeTextType="uniform"
+                    android:text="@string/Lada_start"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/keyboardLayout"
+                android:layout_width="750px"
+                android:layout_height="960px"
+                android:layout_alignParentRight="true"
+                android:visibility="invisible"
+                android:background="@color/drak_gray"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/NumLayout"
+                    android:layout_width="535px"
+                    android:layout_height="960px"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="535px"
+                        android:layout_height="225px"
+                        android:layout_alignParentLeft="true"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/Btn7"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="7"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn8"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="8"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn9"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="9"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="535px"
+                        android:layout_height="225px"
+                        android:layout_alignParentLeft="true"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/Btn4"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="4"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn5"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="5"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn6"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="6"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="535px"
+                        android:layout_height="225px"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/Btn1"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="1"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn2"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="2"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn3"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="3"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="535px"
+                        android:layout_height="225px"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/BtnBack"
+                            android:layout_width="178px"
+                            android:layout_height="225px"
+                            android:text="@string/lada_reset"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+
+                        <Button
+                            android:id="@+id/Btn0"
+                            android:layout_width="356px"
+                            android:layout_height="225px"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:background="@drawable/xml_btn_outline_red" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/RightLayout"
+                    android:layout_width="215px"
+                    android:layout_height="960px"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/BtnDel"
+                        android:layout_width="215px"
+                        android:layout_height="480px"
+                        android:background="@drawable/xml_btn_outline_red">
+                        <ImageView
+                            android:layout_width="100px"
+                            android:layout_height="100px"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/png_clean_del"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/BtnFinish"
+                        android:layout_width="215px"
+                        android:layout_height="480px"
+                        android:background="@drawable/xml_btn_outline_red">
+                        <ImageView
+                            android:layout_width="150px"
+                            android:layout_height="150px"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/png_ok_black"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/DetectLayout"
+            android:layout_width="1920px"
+            android:layout_height="1080px"
+            android:layout_marginTop="50px"
+            android:layout_marginLeft="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginBottom="50px"
+            android:visibility="invisible"
+            android:background="@drawable/xml_ladar_page">
+
+            <RelativeLayout
+                android:id="@+id/DistanceLayout"
+                android:layout_width="1200px"
+                android:layout_height="1080px"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true">
+
+                <ImageView
+                    android:layout_width="1200px"
+                    android:layout_height="500px"
+                    android:background="@drawable/png_show_dis" />
+
+                <TextView
+                    android:id="@+id/tv_show_dis"
+                    android:layout_width="1200px"
+                    android:layout_height="200px"
+                    android:textColor="@color/black"
+                    android:textSize="30dp"
+                    android:gravity="center"
+                    android:layout_above="@+id/btnRingSlider"/>
+
+
+                <ImageView
+                    android:id="@+id/btnRingSlider"
+                    android:layout_width="100px"
+                    android:layout_height="100px"
+                    android:layout_marginBottom="50px"
+                    android:layout_marginLeft="100px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/xml_btn_ring_slider"/>
+                    <SeekBar
+                        android:id="@+id/ringBar"
+                        android:layout_width="800px"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="50px"
+                        android:layout_marginLeft="100px"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@+id/btnRingSlider"
+                        android:progress="80"
+                        android:max="100"
+                        android:min="0"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="500px"
+                android:layout_height="1080px"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true">
+
+                <ImageView
+                    android:id="@+id/btnRing"
+                    android:layout_width="500px"
+                    android:layout_height="500px"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="50px"
+                    android:background="@drawable/xml_btn_lada" />
+
+                <TextView
+                    android:id="@+id/BtnOff"
+                    android:layout_width="225px"
+                    android:layout_height="150px"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/btnRing"
+                    android:text="@string/Lada_off"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/xml_lada_off"/>
+                <TextView
+                    android:id="@+id/tv_and"
+                    android:layout_width="50px"
+                    android:layout_height="150px"
+                    android:layout_below="@+id/btnRing"
+                    android:gravity="center"
+                    android:layout_toLeftOf="@+id/BtnOff"
+                    android:text="@string/Lada_and"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/BtnOn"
+                    android:layout_width="225px"
+                    android:layout_height="150px"
+                    android:layout_below="@+id/btnRing"
+                    android:layout_toLeftOf="@+id/tv_and"
+                    android:text="@string/Lada_on"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/xml_lada_on"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/BtnReturn"
+            android:layout_width="150px"
+            android:layout_height="120px"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100px"
+            android:layout_marginTop="100px"
+            android:visibility="invisible"
+            android:background="@drawable/png_return_unsel" />
+    </RelativeLayout>
+
+</RelativeLayout>

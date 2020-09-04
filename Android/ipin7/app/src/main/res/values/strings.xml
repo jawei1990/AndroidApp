@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">ipin7</string>
+
+    <string name="near_dis"> 輸入感應距離(近)</string>
+    <string name="mid_dis"> 輸入感應距離(中)</string>
+    <string name="far_dis"> 輸入感應距離(遠)</string>
+    <string name="cm">cm</string>
+
+    <string name="Lada_and"> / </string>
+    <string name="Lada_start"> 開始 </string>
+    <string name="Lada_on">開</string>
+    <string name="Lada_off">關</string>
+    <string name="lada_reset">歸零</string>
+
+    <string name="cnt_del">歸零</string>
+    <string name="cnt_reset">歸零</string>
+    <string name="cnt_enter_dis">輸入單圈距離(m):  </string>
+    <string name="m">m</string>
+
+    <string name="bike_data_title">踏頻</string>
+    <string name="bike_data_unit">rpm</string>
+    <string name="bike_speed">Km/h</string>
+    <string name="bike_cad">CAD</string>
+    <string name="bike_km">km</string>
+    <string name="bike_dis">D</string>
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name='blackAlpha75'>#96000000</color>  <!-- 99 is for alpha 85% -->
+    <color name='blackAlpha50'>#7F000000</color>  <!-- 99 is for alpha 85% -->
+    <!-- 99 is for alpha 10% -->
+
+    <color name="PintColor">#FF5555</color>
+    <color name="BlueColor">#00A0E9</color>
+    <color name="GreenColor">#00913A</color>
+    <color name="RedColor">#E60012</color>
+    <color name="FontColor">#000066</color>
+
+    <color name="drak_gray">#2A2A30</color>
+
+    <color name="lightYello">#FBE1B6</color>
+
+    <color name="fee_red">#D71518</color>
+    <color name="fee_blue">#0071F3</color>
+    <color name="fee_orange">#F39800</color>
+
+    <color name="light_red">#FDF3F3</color>
+    <color name="light_blue">#F2F8FF</color>
+    <color name="light_orange">#FBE1B6</color>
+
+    <color name="pressedColor">#F39800</color>
+
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="orange">#FF8800</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="blue">#00A0E9</color>
+    <color name="gray">#c8c8c8</color>
+    <color name="darkBlue">#00264d</color>
+    <color name='blackAlpha'>#D9000000</color>  <!-- 99 is for alpha 85% -->
+    <!-- 99 is for alpha 10% -->
+
+    <color name='orang_yellow'>#F1C40F</color>
+    <color name='grass_green'>#6FC026</color>
+</resources>
