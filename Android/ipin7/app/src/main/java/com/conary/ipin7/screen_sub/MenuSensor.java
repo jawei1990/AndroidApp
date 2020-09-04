@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class MenuSensor extends Activity implements View.OnClickListener
     private TextView BtnOn,BtnOff;
 
     private RelativeLayout guideLayout, displayLayout;
+    private LinearLayout BtnDel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,8 @@ public class MenuSensor extends Activity implements View.OnClickListener
         BtnOff = findViewById(R.id.sen_BtnOff);
         BtnOff.setOnClickListener(this);
 
+        BtnDel = findViewById(R.id.sen_btnDel);
+        BtnDel.setOnClickListener(this);
     }
 
     @Override
@@ -103,6 +107,9 @@ public class MenuSensor extends Activity implements View.OnClickListener
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
+                break;
+            case R.id.sen_btnDel:
+                // Clean log
                 break;
 
         }

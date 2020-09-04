@@ -11,117 +11,160 @@
         android:layout_height="1080px"
         android:background="@color/light_orange">
 
-    <RelativeLayout
-        android:id="@+id/sen_guideLayout"
-        android:layout_width="1920px"
-        android:layout_height="1080px"
-        android:layout_marginTop="50px"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="50px"
-        android:background="@drawable/xml_ladar_page">
-        <ImageView
-            android:id="@+id/sen_ImgGuid"
-            android:layout_width="1400px"
-            android:layout_height="900px"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/anim_sen_guide"/>
-        <ImageView
-            android:id="@+id/sen_BtnNext"
-            android:layout_width="150px"
-            android:layout_height="150px"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/xml_btn_ok" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/sen_displayLayout"
-        android:layout_width="1920px"
-        android:layout_height="1080px"
-        android:layout_marginTop="50px"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="50px"
-        android:visibility="invisible"
-        android:background="@drawable/xml_ladar_page">
-
         <RelativeLayout
-            android:layout_width="1200px"
+            android:id="@+id/sen_guideLayout"
+            android:layout_width="1920px"
             android:layout_height="1080px"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true">
+            android:layout_marginLeft="50px"
+            android:layout_marginTop="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginBottom="50px"
+            android:background="@drawable/xml_ladar_page"
+            android:visibility="visible">
 
-            <ListView
-                android:id="@+id/sen_listView"
-                android:layout_width="800px"
-                android:layout_height="800px"
+            <ImageView
+                android:id="@+id/sen_ImgGuid"
+                android:layout_width="1400px"
+                android:layout_height="900px"
                 android:layout_centerInParent="true"
-                android:divider="@color/gray"
-                android:dividerHeight="1.0dp"
-                android:background="@color/blackAlpha"
-                android:scrollbars="vertical"/>
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/anim_sen_guide" />
+
+            <ImageView
+                android:id="@+id/sen_BtnNext"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/xml_btn_ok" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="500px"
+            android:id="@+id/sen_displayLayout"
+            android:layout_width="1920px"
             android:layout_height="1080px"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true">
+            android:layout_marginLeft="50px"
+            android:layout_marginTop="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginBottom="50px"
+            android:background="@drawable/xml_ladar_page"
+            android:visibility="invisible">
 
-            <ImageView
-                android:id="@+id/sen_BtnReturn"
-                android:layout_width="150px"
-                android:layout_height="120px"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/png_return_unsel" />
+            <RelativeLayout
+                android:id="@+id/leftLayout"
+                android:layout_width="1200px"
+                android:layout_height="1080px"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true">
 
-            <ImageView
-                android:id="@+id/sen_btnRing"
+                <ListView
+                    android:id="@+id/sen_listView"
+                    android:layout_width="1000px"
+                    android:layout_height="800px"
+                    android:layout_centerInParent="true"
+                    android:background="@color/blackAlpha"
+                    android:divider="@color/gray"
+                    android:dividerHeight="1.0dp"
+                    android:scrollbars="vertical" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="500px"
-                android:layout_height="500px"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="50px"
-                android:background="@drawable/xml_btn_lada" />
+                android:layout_height="1080px"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/leftLayout">
 
-            <TextView
-                android:id="@+id/sen_BtnOff"
-                android:layout_width="225px"
-                android:layout_height="150px"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/sen_btnRing"
-                android:text="@string/Lada_off"
-                android:gravity="center"
-                android:textSize="20dp"
-                android:autoSizeTextType="uniform"
-                android:textColor="@color/xml_lada_off"/>
-            <TextView
-                android:id="@+id/sen_tv_and"
-                android:layout_width="50px"
-                android:layout_height="150px"
-                android:layout_below="@+id/sen_btnRing"
-                android:gravity="center"
-                android:layout_toLeftOf="@+id/sen_BtnOff"
-                android:text="@string/Lada_and"
-                android:textSize="20dp"
-                android:textColor="@color/black"/>
-            <TextView
-                android:id="@+id/sen_BtnOn"
-                android:layout_width="225px"
-                android:layout_height="150px"
-                android:layout_below="@+id/sen_btnRing"
-                android:layout_toLeftOf="@+id/sen_tv_and"
-                android:text="@string/Lada_on"
-                android:gravity="center"
-                android:textSize="20dp"
-                android:autoSizeTextType="uniform"
-                android:textColor="@color/xml_lada_on"/>
+                <ImageView
+                    android:id="@+id/sen_BtnReturn"
+                    android:layout_width="150px"
+                    android:layout_height="120px"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/png_return_unsel" />
 
+                <LinearLayout
+                    android:id="@+id/sen_CtrLayout"
+                    android:layout_width="600px"
+                    android:layout_height="375px"
+                    android:layout_below="@+id/sen_BtnReturn"
+                    android:layout_alignParentLeft="true"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/sen_btnRing"
+                        android:layout_width="250px"
+                        android:layout_height="250px"
+                        android:layout_gravity="center"
+                        android:background="@drawable/xml_btn_sen" />
+
+                    <RelativeLayout
+                        android:layout_width="300px"
+                        android:layout_height="100px"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/sen_BtnOn"
+                            android:layout_width="100px"
+                            android:layout_height="100px"
+                            android:layout_alignParentLeft="true"
+                            android:layout_gravity="center"
+                            android:autoSizeTextType="uniform"
+                            android:gravity="center"
+                            android:text="@string/Lada_on"
+                            android:textColor="@color/xml_lada_on"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/sen_tv_and"
+                            android:layout_width="100px"
+                            android:layout_height="100px"
+                            android:layout_gravity="center"
+                            android:layout_toRightOf="@+id/sen_BtnOn"
+                            android:gravity="center"
+                            android:text="@string/Lada_and"
+                            android:textColor="@color/black"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/sen_BtnOff"
+                            android:layout_width="100px"
+                            android:layout_height="100px"
+                            android:layout_gravity="center"
+                            android:layout_toRightOf="@+id/sen_tv_and"
+                            android:autoSizeTextType="uniform"
+                            android:gravity="center"
+                            android:text="@string/Lada_off"
+                            android:textColor="@color/xml_lada_off"
+                            android:textSize="20dp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sen_btnDel"
+                    android:layout_width="600px"
+                    android:layout_height="450px"
+                    android:layout_below="@+id/sen_CtrLayout"
+                    android:layout_alignParentLeft="true"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="250px"
+                        android:layout_height="250px"
+                        android:layout_gravity="center"
+                        android:background="@drawable/xml_btn_del" />
+
+                    <TextView
+                        android:layout_width="300px"
+                        android:layout_height="100px"
+                        android:layout_gravity="center"
+                        android:autoSizeTextType="uniform"
+                        android:gravity="center"
+                        android:text="@string/cnt_del"
+                        android:textColor="@color/xml_cnt_del"
+                        android:textSize="20dp" />
+                </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
