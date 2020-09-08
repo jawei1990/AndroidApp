@@ -1,4 +1,4 @@
-package com.conary.ipin7.screen_sub;
+package com.conary.ipin7.adapter;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -12,13 +12,13 @@ import com.conary.ipin7.R;
 
 import java.util.List;
 
-public class RaceCntAdapter extends BaseAdapter
+public class sensorAdapter extends BaseAdapter
 {
     private LayoutInflater mInflater;
-    private List<ListRaceCnt> mList;
+    private List<ListSensor> mList;
     private DisplayMetrics dm;
 
-    public RaceCntAdapter(Context context, List<ListRaceCnt> list)
+    public sensorAdapter(Context context, List<ListSensor> list)
     {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         dm = context.getResources().getDisplayMetrics();
@@ -45,18 +45,17 @@ public class RaceCntAdapter extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View v;
         if(convertView == null)
-            v = mInflater.inflate(R.layout.cnt_list_item, parent, false);
+            v = mInflater.inflate(R.layout.sen_list_item, parent, false);
         else
             v = convertView;
 
-        ListRaceCnt item = (ListRaceCnt) getItem(position);
-        TextView tv_idx = (TextView) v.findViewById(R.id.cnt_tv_idx);
-        TextView tv_time = (TextView) v.findViewById(R.id.cnt_tv_time);
-        TextView tv_speed = (TextView) v.findViewById(R.id.cnt_tv_speed);
+        ListSensor item = (ListSensor) getItem(position);
+        TextView tv_time = (TextView) v.findViewById(R.id.sen_tv_time);
+        TextView tv_msg = (TextView) v.findViewById(R.id.sen_tv_msg);
 
-        tv_idx.setText(String.valueOf(position));
         tv_time.setText(item.getTime());
-        tv_speed.setText(item.getSpeed());
+        tv_msg.setSelected(item.getAlarmDetectStatuss());
+        tv_msg.setText(item.getLogs());
 
         return v;
     }

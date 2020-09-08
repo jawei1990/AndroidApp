@@ -1,6 +1,7 @@
 package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,9 @@ import android.widget.TextView;
 
 import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
-import com.conary.ipin7.utils.DataLog;
+import com.conary.ipin7.adapter.ListRaceCnt;
+import com.conary.ipin7.adapter.RaceCntAdapter;
+import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.utils.UserPreferences;
 import com.conary.ipin7.view.ScreenScale;
 
@@ -30,6 +33,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
     private ImageView ImgGuide;
     private ImageView BtnOk, BtnReturn, BtnRing;
     private TextView BtnOn, BtnOff;
+    private ImageView BtnGuBack;
 
     private LinearLayout BtnDel;
     private LinearLayout keyboardLayout;
@@ -122,6 +126,9 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         BtnKeyDel.setOnClickListener(this);
         BtnFinish.setOnClickListener(this);
 
+        BtnGuBack = findViewById(R.id.cnt_BtnGuBack);
+        BtnGuBack.setOnClickListener(this);
+
         listAdapter = new RaceCntAdapter(this, cntList);
         listView = findViewById(R.id.cnt_listView);
         listView.setAdapter(listAdapter);
@@ -141,6 +148,11 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId())
         {
+            case R.id.cnt_BtnGuBack:
+                Intent intent = null;
+                intent  = new Intent(this, MainActivity.class);
+                this.startActivity(intent);
+            break;
             case R.id.tv_cnt_time:
             {
                 // For test input data

@@ -15,20 +15,30 @@
             android:id="@+id/bike_guideLayout"
             android:layout_width="1920px"
             android:layout_height="1080px"
-            android:layout_marginTop="50px"
             android:layout_marginLeft="50px"
+            android:layout_marginTop="50px"
             android:layout_marginRight="50px"
             android:layout_marginBottom="50px"
-            android:visibility="invisible"
-            android:background="@drawable/xml_ladar_page">
+            android:background="@drawable/xml_ladar_page"
+            android:visibility="visible">
+
             <ImageView
                 android:id="@+id/bike_ImgGuid"
                 android:layout_width="720px"
                 android:layout_height="620px"
                 android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/anim_bike_guide"/>
+                android:layout_centerVertical="true"
+                android:background="@drawable/anim_bike_guide" />
+
+            <ImageView
+                android:id="@+id/bike_BtnGuBack"
+                android:layout_width="150px"
+                android:layout_height="120px"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/png_return_unsel" />
+
             <ImageView
                 android:id="@+id/bike_BtnNext"
                 android:layout_width="150px"
@@ -42,60 +52,12 @@
             android:id="@+id/bike_displayLayout"
             android:layout_width="1920px"
             android:layout_height="1080px"
-            android:layout_marginTop="50px"
             android:layout_marginLeft="50px"
+            android:layout_marginTop="50px"
             android:layout_marginRight="50px"
             android:layout_marginBottom="50px"
             android:background="@drawable/xml_ladar_page"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:id="@+id/bike_viewGraphic"
-                android:layout_width="1200px"
-                android:layout_height="1080px"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:visibility="invisible">
-
-                <RelativeLayout
-                    android:id="@+id/tv_bike_data"
-                    android:layout_width="500px"
-                    android:layout_height="250px"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/xml_bike_freq_outline">
-
-                    <TextView
-                        android:layout_width="100px"
-                        android:layout_height="100px"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginLeft="20px"
-                        android:autoSizeTextType="uniform"
-                        android:text="@string/bike_data_title"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/tv_bike_freq"
-                        android:layout_width="350px"
-                        android:layout_height="150px"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentBottom="true"
-                        android:autoSizeTextType="uniform"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:layout_width="150px"
-                        android:layout_height="150px"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:autoSizeTextType="uniform"
-                        android:text="@string/bike_data_unit"
-                        android:textColor="@color/black" />
-                </RelativeLayout>
-
-
-            </RelativeLayout>
+            android:visibility="invisible">
 
             <LinearLayout
                 android:id="@+id/bike_viewData"
@@ -264,13 +226,61 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/bike_viewGraphic"
+                android:layout_width="1200px"
+                android:layout_height="1080px"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:visibility="invisible">
+
+                <RelativeLayout
+                    android:id="@+id/tv_bike_data"
+                    android:layout_width="500px"
+                    android:layout_height="250px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/xml_bike_freq_outline">
+
+                    <TextView
+                        android:layout_width="100px"
+                        android:layout_height="100px"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="20px"
+                        android:autoSizeTextType="uniform"
+                        android:text="@string/bike_data_title"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tv_bike_freq"
+                        android:layout_width="350px"
+                        android:layout_height="150px"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="true"
+                        android:autoSizeTextType="uniform"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="150px"
+                        android:layout_height="150px"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:autoSizeTextType="uniform"
+                        android:text="@string/bike_data_unit"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="600px"
                 android:layout_height="1080px"
-                android:layout_toRightOf="@+id/bike_viewData"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/bike_viewData">
 
                 <ImageView
                     android:id="@+id/bike_BtnReturn"

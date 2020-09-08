@@ -1,18 +1,20 @@
 package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.conary.ipin7.R;
-import com.conary.ipin7.utils.DataLog;
+import com.conary.ipin7.adapter.ListSensor;
+import com.conary.ipin7.adapter.sensorAdapter;
+import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -27,12 +29,14 @@ public class MenuSensor extends Activity implements View.OnClickListener
     private ImageView ImgGuide;
     private ImageView BtnOk,BtnReturn, BtnRing;
     private TextView BtnOn,BtnOff;
+    private ImageView BtnGuBack;
 
     private RelativeLayout guideLayout, displayLayout;
     private LinearLayout BtnDel;
     private ListView listView;
     private sensorAdapter listAdapter;
     private List<ListSensor> sensorList= new ArrayList<>();
+    SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,6 @@ public class MenuSensor extends Activity implements View.OnClickListener
 
         ScreenScale.initial(this);
         ScreenScale.changeAllViewSize(findViewById(R.id.screen_sensor));
-        DataLog.e(" MenuSensor 1 ");
-
         initView();
     }
 
@@ -79,6 +81,9 @@ public class MenuSensor extends Activity implements View.OnClickListener
         BtnDel = findViewById(R.id.sen_btnDel);
         BtnDel.setOnClickListener(this);
 
+        BtnGuBack = findViewById(R.id.sen_BtnGuBack);
+        BtnGuBack.setOnClickListener(this);
+
         listAdapter = new sensorAdapter(this,sensorList);
         listView = findViewById(R.id.sen_listView);
         listView.setAdapter(listAdapter);
@@ -94,6 +99,11 @@ public class MenuSensor extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch(v.getId())
         {
+            case R.id.sen_BtnGuBack:
+                Intent intent = null;
+                intent  = new Intent(this, MainActivity.class);
+                this.startActivity(intent);
+            break;
             case R.id.sen_BtnNext:
                 displayLayout.setVisibility(View.VISIBLE);
                 break;
@@ -125,15 +135,15 @@ public class MenuSensor extends Activity implements View.OnClickListener
                 BtnRing.setSelected(true);
                 BtnOn.setSelected(true);
                 BtnOff.setSelected(true);
-                //startDetect();
-                AlarmDetect();
+                startDetect();
+//                AlarmDetect();
                 break;
             case R.id.sen_BtnOff:
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
-                CancleAlarmDetect();
-                //stopDetect();
+//                CancleAlarmDetect();
+                stopDetect();
                 break;
             case R.id.sen_btnDel:
                 // Clean log
@@ -163,7 +173,6 @@ public class MenuSensor extends Activity implements View.OnClickListener
         listAdapter.notifyDataSetChanged();
     }
 
-    SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
     void startDetect()
     {
         Date currentTime = Calendar.getInstance().getTime();

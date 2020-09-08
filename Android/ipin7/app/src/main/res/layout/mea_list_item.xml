@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="3">
+        <TableRow>
+            <View
+                style="@style/list_item_cell_seperator_layout" />
+            <TextView
+                android:id="@+id/mea_tv_time"
+                android:layout_width="600px"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:background="@color/black"
+                android:autoSizeTextType="uniform"
+                android:gravity="center" />
+
+            <View
+                style="@style/list_item_cell_seperator_layout" />
+
+            <TextView
+                android:id="@+id/men_tv_msg"
+                android:layout_width="600px"
+                android:layout_height="wrap_content"
+                android:textColor="@color/xml_sen_msg"
+                android:gravity="center"
+                android:background="@color/black" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout >

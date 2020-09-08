@@ -1,6 +1,7 @@
 package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.conary.ipin7.R;
+import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.view.ScreenScale;
 
@@ -18,7 +20,7 @@ public class MenuBike extends Activity implements View.OnClickListener
     private AnimationDrawable animGuide;
     private ImageView ImgGuide;
     private ImageView BtnOk,BtnReturn, BtnRing;
-
+    private ImageView BtnGuBack;
     private TextView BtnOn,BtnOff;
 
     private RelativeLayout guideLayout,displayLayout,graphicLayout;
@@ -73,12 +75,20 @@ public class MenuBike extends Activity implements View.OnClickListener
 
         BtnDel = findViewById(R.id.bike_btnDel);
         BtnDel.setOnClickListener(this);
+
+        BtnGuBack = findViewById(R.id.bike_BtnGuBack);
+        BtnGuBack.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
+            case R.id.bike_BtnGuBack:
+                Intent intent = null;
+                intent  = new Intent(this, MainActivity.class);
+                this.startActivity(intent);
+            break;
             case R.id.bike_viewData:
             case R.id.bike_viewGraphic:
                 if(viewDataLayout.getVisibility() == View.VISIBLE)

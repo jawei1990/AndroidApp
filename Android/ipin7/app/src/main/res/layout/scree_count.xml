@@ -28,6 +28,15 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/anim_cnt_guide"/>
+
+        <ImageView
+            android:id="@+id/cnt_BtnGuBack"
+            android:layout_width="150px"
+            android:layout_height="120px"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/png_return_unsel" />
+
         <ImageView
             android:id="@+id/cnt_BtnNext"
             android:layout_width="150px"

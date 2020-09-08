@@ -27,6 +27,15 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/png_lada_gu_1"/>
+
+            <ImageView
+                android:id="@+id/lada_BtnGuBack"
+                android:layout_width="150px"
+                android:layout_height="120px"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/png_return_unsel" />
+
             <ImageView
                 android:id="@+id/BtnNext"
                 android:layout_width="150px"

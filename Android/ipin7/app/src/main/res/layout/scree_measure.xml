@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/screen_sensor"
+    android:id="@+id/screen_measure"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -13,7 +13,7 @@
         android:background="@color/light_orange">
 
         <RelativeLayout
-            android:id="@+id/sen_guideLayout"
+            android:id="@+id/mea_displayLayout"
             android:layout_width="1920px"
             android:layout_height="1080px"
             android:layout_marginLeft="50px"
@@ -23,67 +23,31 @@
             android:background="@drawable/xml_ladar_page"
             android:visibility="visible">
 
-            <ImageView
-                android:id="@+id/sen_ImgGuid"
-                android:layout_width="1400px"
-                android:layout_height="900px"
-                android:layout_centerInParent="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/anim_sen_guide" />
-
-            <ImageView
-                android:id="@+id/sen_BtnGuBack"
-                android:layout_width="150px"
-                android:layout_height="120px"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/png_return_unsel" />
-
-            <ImageView
-                android:id="@+id/sen_BtnNext"
-                android:layout_width="150px"
-                android:layout_height="150px"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/xml_btn_ok" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/sen_displayLayout"
-            android:layout_width="1920px"
-            android:layout_height="1080px"
-            android:layout_marginLeft="50px"
-            android:layout_marginTop="50px"
-            android:layout_marginRight="50px"
-            android:layout_marginBottom="50px"
-            android:background="@drawable/xml_ladar_page"
-            android:visibility="invisible">
-
             <LinearLayout
                 android:id="@+id/leftLayout"
                 android:layout_width="1200px"
                 android:layout_height="1080px"
-                android:layout_marginTop="50px"
-                android:layout_marginLeft="50px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_marginLeft="50px"
+                android:layout_marginTop="50px"
                 android:orientation="vertical">
 
                 <View style="@style/list_item_seperator_layout" />
-                <include
-                    layout="@layout/sen_list_title" />
-
+                <include layout="@layout/mea_list_title" />
                 <View style="@style/list_item_seperator_layout" />
-
                 <ListView
-                    android:id="@+id/sen_listView"
+                    android:id="@+id/mea_listView"
                     android:layout_width="1200px"
                     android:layout_height="fill_parent"
                     android:background="@color/blackAlpha"
                     android:divider="@color/gray"
                     android:dividerHeight="1.0dp"
                     android:scrollbars="vertical" />
+
+
+
+
             </LinearLayout>
 
             <RelativeLayout
@@ -93,7 +57,7 @@
                 android:layout_toRightOf="@+id/leftLayout">
 
                 <ImageView
-                    android:id="@+id/sen_BtnReturn"
+                    android:id="@+id/mea_BtnReturn"
                     android:layout_width="150px"
                     android:layout_height="120px"
                     android:layout_alignParentTop="true"
@@ -101,15 +65,15 @@
                     android:background="@drawable/png_return_unsel" />
 
                 <LinearLayout
-                    android:id="@+id/sen_CtrLayout"
+                    android:id="@+id/mea_CtrLayout"
                     android:layout_width="600px"
                     android:layout_height="375px"
-                    android:layout_below="@+id/sen_BtnReturn"
+                    android:layout_below="@+id/mea_BtnReturn"
                     android:layout_alignParentLeft="true"
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/sen_btnRing"
+                        android:id="@+id/mea_btnRing"
                         android:layout_width="250px"
                         android:layout_height="250px"
                         android:layout_gravity="center"
@@ -121,7 +85,7 @@
                         android:layout_gravity="center">
 
                         <TextView
-                            android:id="@+id/sen_BtnOn"
+                            android:id="@+id/mea_BtnOn"
                             android:layout_width="100px"
                             android:layout_height="100px"
                             android:layout_alignParentLeft="true"
@@ -133,22 +97,22 @@
                             android:textSize="20dp" />
 
                         <TextView
-                            android:id="@+id/sen_tv_and"
+                            android:id="@+id/mea_tv_and"
                             android:layout_width="100px"
                             android:layout_height="100px"
                             android:layout_gravity="center"
-                            android:layout_toRightOf="@+id/sen_BtnOn"
+                            android:layout_toRightOf="@+id/mea_BtnOn"
                             android:gravity="center"
                             android:text="@string/Lada_and"
                             android:textColor="@color/black"
                             android:textSize="20dp" />
 
                         <TextView
-                            android:id="@+id/sen_BtnOff"
+                            android:id="@+id/mea_BtnOff"
                             android:layout_width="100px"
                             android:layout_height="100px"
                             android:layout_gravity="center"
-                            android:layout_toRightOf="@+id/sen_tv_and"
+                            android:layout_toRightOf="@+id/mea_tv_and"
                             android:autoSizeTextType="uniform"
                             android:gravity="center"
                             android:text="@string/Lada_off"
@@ -158,10 +122,10 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/sen_btnDel"
+                    android:id="@+id/mea_btnDel"
                     android:layout_width="600px"
                     android:layout_height="450px"
-                    android:layout_below="@+id/sen_CtrLayout"
+                    android:layout_below="@+id/mea_CtrLayout"
                     android:layout_alignParentLeft="true"
                     android:orientation="vertical">
 

@@ -1,4 +1,4 @@
-package com.conary.ipin7.screen_sub;
+package com.conary.ipin7.adapter;
 
 public class ListRaceCnt
 {

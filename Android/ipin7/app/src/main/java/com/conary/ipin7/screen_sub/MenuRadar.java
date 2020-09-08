@@ -1,6 +1,7 @@
 package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.sax.RootElement;
@@ -28,6 +29,7 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
     ImageView BtnNearRing, BtnMidRing, BtnFarRing;
     TextView BtnOn, BtnOff,tv_Dis;
     ImageView BtnRingCtl,BtnReturn,BtnRingSlider;
+    private ImageView BtnGuBack;
     SeekBar RingBar;
 
     RelativeLayout guideLayout,settingLayout,DetectLayout;
@@ -115,6 +117,9 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
         BtnDel = findViewById(R.id.BtnDel);
         BtnFinish = findViewById(R.id.BtnFinish);
 
+        BtnGuBack = findViewById(R.id.lada_BtnGuBack);
+        BtnGuBack.setOnClickListener(this);
+
         Btn0.setOnClickListener(this);
         Btn1.setOnClickListener(this);
         Btn2.setOnClickListener(this);
@@ -134,6 +139,11 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
     public void onClick(View v) {
         switch (v.getId())
         {
+            case R.id.lada_BtnGuBack:
+                Intent intent = null;
+                intent  = new Intent(this, MenuBike.class);
+                this.startActivity(intent);
+            break;
             case R.id.btnRingSlider:
                 if(BtnRingSlider.isSelected())
                 {
