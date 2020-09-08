@@ -10,12 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.screen_main.MainActivity;
+import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.view.ScreenScale;
 
-public class MenuBike extends Activity implements View.OnClickListener
+public class MenuBike extends Activity implements View.OnClickListener,UsbModelImpl.UsbView
 {
     private AnimationDrawable animGuide;
     private ImageView ImgGuide;
@@ -25,6 +27,7 @@ public class MenuBike extends Activity implements View.OnClickListener
 
     private RelativeLayout guideLayout,displayLayout,graphicLayout;
     private LinearLayout viewDataLayout,BtnDel;
+    private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class MenuBike extends Activity implements View.OnClickListener
         DataLog.e(" MenuSensor 1 ");
 
         initView();
+        mUsb.USB_ViewInit(this);
     }
 
     protected void onResume()
@@ -139,4 +143,15 @@ public class MenuBike extends Activity implements View.OnClickListener
                 break;
         }
     }
+
+    @Override
+    public void UsbDebugLog(String str) {
+
+    }
+
+    @Override
+    public void USB_UI_Viwe(int data, Object obj) {
+
+    }
+
 }

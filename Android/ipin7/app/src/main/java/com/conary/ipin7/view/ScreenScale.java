@@ -2,6 +2,7 @@ package com.conary.ipin7.view;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +21,19 @@ public class ScreenScale
     public static boolean Scale = true;
 
     //Design Screen Size
-    public static float design_width = 1080;
-    public static float design_height = 1920;
+    public static float design_width = 1920;
+    public static float design_height = 1080;
 
     //Physical machine Size
-    public static float machine_width = 1080;
-    public static float machine_height = 1920;
+    public static float machine_width = 1184;
+    public static float machine_height = 720;
 
     public static void initial(Activity ac){
         DisplayMetrics dm = new DisplayMetrics();
         activity = ac;
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        DataLog.d("dm.widthPixels:" + dm.widthPixels);
-        DataLog.d("dm.heightPixels:"+dm.heightPixels);
+        Log.d("Awei","dm.widthPixels:" + dm.widthPixels);
+        Log.d("Awei","dm.heightPixels:"+dm.heightPixels);
 
         if (dm.widthPixels>dm.heightPixels){
             if (design_height>design_width){

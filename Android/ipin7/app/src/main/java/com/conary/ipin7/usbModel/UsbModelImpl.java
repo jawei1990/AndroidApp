@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static com.conary.ipin7.utils.DeviceStatus.deviceOffset;
-import static com.conary.ipin7.utils.DeviceStatus.SetDline;
 import static com.conary.ipin7.utils.DeviceStatus.isLaserOn;
 import static com.conary.ipin7.utils.DeviceStatus.isContinous;
 
@@ -42,7 +41,7 @@ public class UsbModelImpl implements UsbModel
     public interface UsbView
     {
         void UsbDebugLog(String str);
-        void USB_UI_Viwe(int data);
+        void USB_UI_Viwe(int data,Object obj);
     }
 
     public UsbModelImpl(UsbManager mUserManager)
@@ -167,8 +166,8 @@ public class UsbModelImpl implements UsbModel
                     DataLog.e("Wait Read Call Back..........");
                     mUsbSerialDevice.read(ReadCallBack);
                     serialPortConnected = true;
-                    view.USB_UI_Viwe(DeviceData.DEVICE_CONNECTED);
-//                    startBackgroundUsbThread();
+                    view.USB_UI_Viwe(DeviceData.DEVICE_CONNECTED,null);
+                    startBackgroundUsbThread();
 
                     byte[] init = new byte[1];
                     init[0] = (byte) 0x55;
@@ -187,18 +186,21 @@ public class UsbModelImpl implements UsbModel
 
     public void USB_ContinuousMeasure()
     {
+        DataLog.e("USB_ContinuousMeasure");
         isContinMode = true;
         SerialDataWrite(DeviceData.FAST_CONTINUOUS_MEASURE);
     }
 
     public void USB_OneShotMeasure()
     {
+        Log.e("Awei","USB_OneShotMeasure");
         isContinMode = false;
         SerialDataWrite(DeviceData.ONE_SHOT_MEASURE);
     }
 
     public void USB_StopMeasure()
     {
+        DataLog.e("USB_StopMeasure");
         isContinMode = false;
         SerialDataWrite(DeviceData.STOP_CONTINUOUS_MEASURE);
     }
@@ -243,7 +245,7 @@ public class UsbModelImpl implements UsbModel
 
         finally
         {
-//            stopBackgroundUsbThread();
+            stopBackgroundUsbThread();
             mUsbSerialDevice = null;
             connection = null;
             serialPortConnected = false;
@@ -254,12 +256,12 @@ public class UsbModelImpl implements UsbModel
     {
         if(serialPortConnected)
         {
-            view.USB_UI_Viwe(DeviceData.DEVICE_CONNECTED);
+            view.USB_UI_Viwe(DeviceData.DEVICE_CONNECTED,null);
             return true;
         }
         else
         {
-            view.USB_UI_Viwe(DeviceData.DEVICE_DISCONNECTED);
+            view.USB_UI_Viwe(DeviceData.DEVICE_DISCONNECTED,null);
             return false;
         }
     }
@@ -319,8 +321,7 @@ public class UsbModelImpl implements UsbModel
 
                 if(ret != 0)
                 {
-                    SetDline = ret;
-                    view.USB_UI_Viwe(DeviceData.DEVICE_UPDATE_DATA);
+                    view.USB_UI_Viwe(DeviceData.DEVICE_UPDATE_DATA,ret);
                 }
             }
             else if(StrData.contains(DeviceData.DECODE_LASER_ON_DATA))
@@ -368,8 +369,7 @@ public class UsbModelImpl implements UsbModel
 
                 if(ret != 0)
                 {
-                    SetDline = ret;
-                    view.USB_UI_Viwe(DeviceData.DEVICE_UPDATE_DATA);
+                    view.USB_UI_Viwe(DeviceData.DEVICE_UPDATE_DATA,ret);
                 }
             }
             else if(StrData.contains(DeviceData.DECODE_LASER_ON_DATA))
@@ -395,8 +395,6 @@ public class UsbModelImpl implements UsbModel
         public void onReceivedData(byte[] data)
         {
             DecodeData(data);
-//            rxStr += ConversionUtils.bytesToHex(data);
-//            DecodeStr(rxStr);
         }
     };
 }

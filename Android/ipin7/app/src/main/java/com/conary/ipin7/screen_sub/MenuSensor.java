@@ -11,10 +11,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.adapter.ListSensor;
 import com.conary.ipin7.adapter.sensorAdapter;
 import com.conary.ipin7.screen_main.MainActivity;
+import com.conary.ipin7.usbModel.UsbModelImpl;
+import com.conary.ipin7.utils.DeviceData;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MenuSensor extends Activity implements View.OnClickListener
+public class MenuSensor extends Activity implements View.OnClickListener,UsbModelImpl.UsbView
 {
     private AnimationDrawable animGuide;
     private ImageView ImgGuide;
@@ -37,6 +40,7 @@ public class MenuSensor extends Activity implements View.OnClickListener
     private sensorAdapter listAdapter;
     private List<ListSensor> sensorList= new ArrayList<>();
     SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
+    private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class MenuSensor extends Activity implements View.OnClickListener
         ScreenScale.initial(this);
         ScreenScale.changeAllViewSize(findViewById(R.id.screen_sensor));
         initView();
+        mUsb.USB_ViewInit(this);
     }
 
     protected void onResume()
@@ -189,5 +194,19 @@ public class MenuSensor extends Activity implements View.OnClickListener
         ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_end_detect));
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void UsbDebugLog(String str) {
+
+    }
+
+    @Override
+    public void USB_UI_Viwe(int data,Object obj) {
+        switch(data)
+        {
+            case DeviceData.DEVICE_UPDATE_DATA:
+                break;
+        }
     }
 }

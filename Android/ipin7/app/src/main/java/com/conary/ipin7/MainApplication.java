@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.Database;
+import com.conary.ipin7.utils.DeviceData;
 import com.conary.ipin7.utils.UserPreferences;
 
 public class MainApplication extends Application
@@ -16,6 +19,8 @@ public class MainApplication extends Application
     public static MainApplication mInstance;
     public Database mDataBase;
     private UserPreferences mUserPreferences;
+    private UsbManager mUserManager;
+    private UsbModelImpl mUsb;
 
     public static synchronized MainApplication getInstance()
     {
@@ -30,6 +35,7 @@ public class MainApplication extends Application
 
         initDataBase();
         initUserPreferences();
+        initUsb();
 
         registerActivityCallbackToCheckIfAppIsRunning();
     }
@@ -45,6 +51,14 @@ public class MainApplication extends Application
         mUserPreferences = new UserPreferences(this);
     }
 
+    private void initUsb()
+    {
+        mUserManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        mUsb = new UsbModelImpl(mUserManager);
+    }
+
+    public UsbModelImpl getUsbImp(){ return mUsb;}
+
     public UserPreferences getUserPreferences(){ return mUserPreferences;}
 
     private void registerActivityCallbackToCheckIfAppIsRunning() {
@@ -52,6 +66,7 @@ public class MainApplication extends Application
             @Override
             public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {
                 // NO-OP
+
             }
 
             @Override
@@ -85,6 +100,9 @@ public class MainApplication extends Application
             @Override
             public void onActivityDestroyed(final Activity activity) {
                 //no-op
+                mUsb.SerialDataWrite(DeviceData.STOP_CONTINUOUS_MEASURE);
+                mUsb.SerialDataWrite(DeviceData.CLOSE_LASER);
+                mUsb.StopUsbConnection();
             }
         });
     }

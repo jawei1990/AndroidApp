@@ -2,6 +2,7 @@ package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,8 @@ import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.adapter.ListMeasure;
 import com.conary.ipin7.adapter.measureAdapter;
+import com.conary.ipin7.usbModel.UsbModelImpl;
+import com.conary.ipin7.utils.DeviceData;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MenuMeasurement extends Activity implements View.OnClickListener
+public class MenuMeasurement extends Activity implements View.OnClickListener, UsbModelImpl.UsbView
 {
     private ImageView BtnReturn, BtnRing;
     private TextView BtnOn,BtnOff;
@@ -33,6 +36,9 @@ public class MenuMeasurement extends Activity implements View.OnClickListener
     private List<ListMeasure> measureList = new ArrayList<>();
     SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
 
+    private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +46,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener
         ScreenScale.initial(this);
         ScreenScale.changeAllViewSize(findViewById(R.id.screen_measure));
         initView();
+        mUsb.USB_ViewInit(this);
     }
 
     protected void onResume()
@@ -95,15 +102,12 @@ public class MenuMeasurement extends Activity implements View.OnClickListener
                 BtnRing.setSelected(true);
                 BtnOn.setSelected(true);
                 BtnOff.setSelected(true);
-                //startDetect();
-                AlarmDetect();
                 break;
             case R.id.mea_BtnOff:
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
-                CancleAlarmDetect();
-                //stopDetect();
+                stopDetect();
                 break;
             case R.id.mea_btnDel:
                 // Clean log
@@ -124,30 +128,51 @@ public class MenuMeasurement extends Activity implements View.OnClickListener
         listAdapter.notifyDataSetChanged();
     }
 
-    void AlarmDetect()
+    void updateDistance(double dis)
     {
+        String strDis = String.valueOf(dis);
         Date currentTime = Calendar.getInstance().getTime();
         String strTime = TimerDateFormat.format(currentTime);
-        ListMeasure list  = new ListMeasure(strTime,getString(R.string.sen_alarm_detect));
+        ListMeasure list  = new ListMeasure(strTime,strDis);
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
+
+        Log.e("Awei","Dis:" + strDis);
     }
 
     void startDetect()
     {
+        mUsb.USB_ContinuousMeasure();
         Date currentTime = Calendar.getInstance().getTime();
         String strTime = TimerDateFormat.format(currentTime);
-        ListMeasure list  = new ListMeasure(strTime,getString(R.string.sen_start_detect));
+        ListMeasure list  = new ListMeasure(strTime,"開始測量");
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
     }
 
     void stopDetect()
     {
+        mUsb.USB_StopMeasure();
         Date currentTime = Calendar.getInstance().getTime();
         String strTime = TimerDateFormat.format(currentTime);
-        ListMeasure list  = new ListMeasure(strTime,getString(R.string.sen_end_detect));
+        ListMeasure list  = new ListMeasure(strTime,"關閉測量");
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void UsbDebugLog(String str) {
+
+    }
+
+    @Override
+    public void USB_UI_Viwe(int data, Object obj) {
+        switch(data)
+        {
+            case DeviceData.DEVICE_UPDATE_DATA:
+                double StrData = (double) obj;
+                updateDistance((double) obj);
+                break;
+        }
     }
 }

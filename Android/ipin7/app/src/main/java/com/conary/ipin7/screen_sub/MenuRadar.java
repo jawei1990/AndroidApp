@@ -16,13 +16,15 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
+import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.view.ScreenScale;
 
 import org.w3c.dom.Text;
 
-public class MenuRadar extends Activity implements View.OnClickListener,View.OnTouchListener,SeekBar.OnSeekBarChangeListener
+public class MenuRadar extends Activity implements View.OnClickListener,View.OnTouchListener,SeekBar.OnSeekBarChangeListener,UsbModelImpl.UsbView
 {
     ImageView BtnOK, BtnNext;
     TextView ed_near, ed_mid, ed_far;
@@ -38,6 +40,7 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
     RelativeLayout BtnDel,BtnFinish;
 
     private final int MaxInputLen = 10;
+    private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
         ScreenScale.changeAllViewSize(findViewById(R.id.screen_radar));
 
         initView();
+        mUsb.USB_ViewInit(this);
     }
 
     protected void onResume()
@@ -391,5 +395,15 @@ public class MenuRadar extends Activity implements View.OnClickListener,View.OnT
         }
 
         return false;
+    }
+
+    @Override
+    public void UsbDebugLog(String str) {
+
+    }
+
+    @Override
+    public void USB_UI_Viwe(int data, Object obj) {
+
     }
 }

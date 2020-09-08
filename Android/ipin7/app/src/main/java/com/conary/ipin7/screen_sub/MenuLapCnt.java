@@ -18,6 +18,7 @@ import com.conary.ipin7.R;
 import com.conary.ipin7.adapter.ListRaceCnt;
 import com.conary.ipin7.adapter.RaceCntAdapter;
 import com.conary.ipin7.screen_main.MainActivity;
+import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.UserPreferences;
 import com.conary.ipin7.view.ScreenScale;
 
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MenuLapCnt extends Activity implements View.OnClickListener
+public class MenuLapCnt extends Activity implements View.OnClickListener,UsbModelImpl.UsbView
 {
     private AnimationDrawable animGuide;
     private ImageView ImgGuide;
@@ -48,7 +49,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
     private List<ListRaceCnt> cntList = new ArrayList<>();
     private RaceCntAdapter listAdapter;
     private UserPreferences mUserPreferences;
-    ;
+    private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         ScreenScale.changeAllViewSize(findViewById(R.id.screen_count));
 
         initView();
+        mUsb.USB_ViewInit(this);
     }
 
     protected void onResume() {
@@ -96,7 +98,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         tv_dis = findViewById(R.id.tv_cnt_dis);
         tv_dis.setOnClickListener(this);
         tv_time = findViewById(R.id.tv_cnt_time);
-//        tv_time.setOnClickListener(this); // Enable for test list data
+        tv_time.setOnClickListener(this); // Enable for test list data
 
         Btn0 = findViewById(R.id.cnt_Btn0);
         Btn1 = findViewById(R.id.cnt_Btn1);
@@ -330,5 +332,15 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void UsbDebugLog(String str) {
+
+    }
+
+    @Override
+    public void USB_UI_Viwe(int data, Object obj) {
+
     }
 }

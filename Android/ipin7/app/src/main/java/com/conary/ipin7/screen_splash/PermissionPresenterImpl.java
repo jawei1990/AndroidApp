@@ -3,6 +3,8 @@ package com.conary.ipin7.screen_splash;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import com.conary.ipin7.MainApplication;
+
 public class PermissionPresenterImpl implements PermissionPresenter
 {
     private PermissionView mView;
@@ -28,7 +30,7 @@ public class PermissionPresenterImpl implements PermissionPresenter
         }
         else
         {
-            mView.ShowMainScreen();
+                mView.ShowMainScreen();
         }
     }
 }

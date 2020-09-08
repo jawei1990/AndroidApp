@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().hide();
         setContentView(R.layout.screen_main);
 
+        MainApplication.getInstance().getUsbImp().StartUsbConnection();
+
         mContext = this;
 
         viewPager = (ViewPager)findViewById(R.id.viewPage);
