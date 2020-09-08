@@ -8,12 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.conary.ipin7.utils.Database;
+import com.conary.ipin7.utils.UserPreferences;
 
 public class MainApplication extends Application
 {
     public static Activity mActivity;
     public static MainApplication mInstance;
     public Database mDataBase;
+    private UserPreferences mUserPreferences;
 
     public static synchronized MainApplication getInstance()
     {
@@ -27,6 +29,7 @@ public class MainApplication extends Application
         mInstance =this;
 
         initDataBase();
+        initUserPreferences();
 
         registerActivityCallbackToCheckIfAppIsRunning();
     }
@@ -36,6 +39,13 @@ public class MainApplication extends Application
         mDataBase = new Database(this);
         mDataBase.open();
     }
+
+    private void initUserPreferences()
+    {
+        mUserPreferences = new UserPreferences(this);
+    }
+
+    public UserPreferences getUserPreferences(){ return mUserPreferences;}
 
     private void registerActivityCallbackToCheckIfAppIsRunning() {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

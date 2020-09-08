@@ -3,6 +3,7 @@ package com.conary.ipin7.screen_sub;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,27 +12,39 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.utils.DataLog;
+import com.conary.ipin7.utils.UserPreferences;
 import com.conary.ipin7.view.ScreenScale;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MenuLapCnt extends Activity implements View.OnClickListener
 {
     private AnimationDrawable animGuide;
     private ImageView ImgGuide;
-    private ImageView BtnOk,BtnReturn, BtnRing;
-    private TextView BtnOn,BtnOff;
+    private ImageView BtnOk, BtnReturn, BtnRing;
+    private TextView BtnOn, BtnOff;
 
     private LinearLayout BtnDel;
     private LinearLayout keyboardLayout;
-    private Button Btn1,Btn2,Btn3,Btn4,Btn5,Btn6,Btn7,Btn8,Btn9,Btn0,BtnBack;
-    private RelativeLayout BtnKeyDel,BtnFinish;
-    private TextView tv_dis,tv_show_dis;
+    private Button Btn1, Btn2, Btn3, Btn4, Btn5, Btn6, Btn7, Btn8, Btn9, Btn0, BtnBack;
+    private RelativeLayout BtnKeyDel, BtnFinish;
+    private TextView tv_dis, tv_time;
 
     private RelativeLayout guideLayout, displayLayout;
     private final int MaxInputLen = 4;
-    private View listTitle;
+
     private ListView listView;
+    private List<ListRaceCnt> cntList = new ArrayList<>();
+    private RaceCntAdapter listAdapter;
+    private UserPreferences mUserPreferences;
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +56,14 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         initView();
     }
 
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         guideLayout.setVisibility(View.VISIBLE);
         displayLayout.setVisibility(View.INVISIBLE);
         keyboardLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void initView()
-    {
+    private void initView() {
         BtnOk = findViewById(R.id.cnt_BtnNext);
         BtnOk.setOnClickListener(this);
 
@@ -80,7 +91,8 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         keyboardLayout = findViewById(R.id.cnt_keyboardLayout);
         tv_dis = findViewById(R.id.tv_cnt_dis);
         tv_dis.setOnClickListener(this);
-        tv_show_dis = findViewById(R.id.tv_show_dis);
+        tv_time = findViewById(R.id.tv_cnt_time);
+//        tv_time.setOnClickListener(this); // Enable for test list data
 
         Btn0 = findViewById(R.id.cnt_Btn0);
         Btn1 = findViewById(R.id.cnt_Btn1);
@@ -110,21 +122,60 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
         BtnKeyDel.setOnClickListener(this);
         BtnFinish.setOnClickListener(this);
 
+        listAdapter = new RaceCntAdapter(this, cntList);
         listView = findViewById(R.id.cnt_listView);
-        listTitle = (View) getLayoutInflater().inflate(R.layout.cnt_list_title,null);
-        listView.addHeaderView(listTitle);
-        listView.setAdapter(null);
+        listView.setAdapter(listAdapter);
+
+/*        for(int i = 0; i < 10; i++)
+        {
+            ListRaceCnt list  = new ListRaceCnt("12:" + i + "0","test" + i);
+            cntList.add(list);
+        }*/
+
+        mUserPreferences = MainApplication.getInstance().getUserPreferences();
+        tv_time.setText(mUserPreferences.get_CntCurrentTime());
+        tv_dis.setText(mUserPreferences.get_CntDisData());
     }
 
     @Override
     public void onClick(View v) {
-        switch(v.getId())
+        switch (v.getId())
         {
+            case R.id.tv_cnt_time:
+            {
+                // For test input data
+                try
+                {
+                    String StrTime = tv_time.getText().toString();
+                    String[] time = StrTime.split(":");
+                    double dis = Double.valueOf(tv_dis.getText().toString());
+                    double sec = 0;
+
+                    sec =  Double.valueOf(time[0]) * 60+  Double.valueOf(time[1]) +  Double.valueOf(time[2]) *  0.001;
+                    double speed = dis / sec;
+                    String StrSpeed = String.format("%.2f",speed);
+                    ListRaceCnt list  = new ListRaceCnt(StrTime,StrSpeed);
+                    cntList.add(list);
+                    listAdapter.notifyDataSetChanged();
+
+                    Log.e("Awei","time:" + StrTime + ",speed:" + StrSpeed);
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+
+                    String StrTime = tv_time.getText().toString();
+                    ListRaceCnt list  = new ListRaceCnt(StrTime,"Err Speed");
+                    cntList.add(list);
+                    listAdapter.notifyDataSetChanged();
+                }
+            }
+            break;
             case R.id.cnt_BtnNext:
                 displayLayout.setVisibility(View.VISIBLE);
                 break;
             case R.id.cnt_BtnReturn:
-                if(displayLayout.getVisibility() == View.VISIBLE)
+                if (displayLayout.getVisibility() == View.VISIBLE)
                 {
                     displayLayout.setVisibility(View.INVISIBLE);
                     guideLayout.setVisibility(View.VISIBLE);
@@ -132,31 +183,42 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
 
                 break;
             case R.id.cnt_btnRing:
-                if(BtnRing.isSelected())
+                if (BtnRing.isSelected())
                 {
                     BtnRing.setSelected(false);
                     BtnOn.setSelected(false);
                     BtnOff.setSelected(false);
+                    stopCnt();
                 }
                 else
                 {
                     BtnRing.setSelected(true);
                     BtnOn.setSelected(true);
                     BtnOff.setSelected(true);
+                    startCnt();
                 }
                 break;
             case R.id.cnt_BtnOn:
                 BtnRing.setSelected(true);
                 BtnOn.setSelected(true);
                 BtnOff.setSelected(true);
+                startCnt();
                 break;
             case R.id.cnt_BtnOff:
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
+                stopCnt();
                 break;
             case R.id.cnt_btnDel:
                 // Do Reset and clean log
+                tv_time.setText("00:00:000");
+                startTime = 0;
+                setDisplayTimer(false,0);
+                BtnOff.performClick();
+
+                cntList.removeAll(cntList);
+                listAdapter.notifyDataSetChanged();
                 break;
             case R.id.tv_cnt_dis:
                 keyboardLayout.setVisibility(View.VISIBLE);
@@ -170,10 +232,10 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
                 int len = 0;
 
                 str = tv_dis.getText().toString();
-                len = str.length()-1;
+                len = str.length() - 1;
 
-                if(len < 0) break;
-                str = str.substring(0,len);
+                if (len < 0) break;
+                str = str.substring(0, len);
                 tv_dis.setText(str);
             }
             break;
@@ -194,17 +256,67 @@ public class MenuLapCnt extends Activity implements View.OnClickListener
             case R.id.cnt_Btn8:
             case R.id.cnt_Btn9:
             {
-                Button btn = (Button)v;
+                Button btn = (Button) v;
                 String str = "";
                 int len = 0;
                 str = tv_dis.getText().toString();
                 len = str.length();
-                if(len > MaxInputLen) break;
+                if (len > MaxInputLen) break;
 
                 str += btn.getText().toString();
                 tv_dis.setText(str);
             }
             break;
+        }
+    }
+
+    long startTime;
+    void startCnt()
+    {
+        tv_time.setSelected(true);
+        startTime =  System.currentTimeMillis();
+        setDisplayTimer(true,100);
+    }
+
+    void stopCnt()
+    {
+        tv_time.setSelected(false);
+        setDisplayTimer(false,0);
+    }
+
+    SimpleDateFormat TimerDateFormat = new SimpleDateFormat("mm:ss:SSS");
+    private Task_DisplayTimer DisplayTimer = new Task_DisplayTimer();
+    private Timer t_DisplayTimer = new Timer();
+    private class Task_DisplayTimer extends TimerTask
+    {
+        public void run()
+        {
+            long difTime = System.currentTimeMillis() - startTime;
+            String strTime = TimerDateFormat.format(difTime);
+            tv_time.setText(strTime);
+
+            if(BtnRing.isSelected())
+                setDisplayTimer(true, 100);
+        }
+    }
+    private void setDisplayTimer(boolean isActivity, int timer)
+    {
+        try
+        {
+            t_DisplayTimer.cancel();
+            DisplayTimer = new Task_DisplayTimer();
+            t_DisplayTimer.purge();
+            t_DisplayTimer.cancel();
+            t_DisplayTimer = new Timer();
+
+            if(isActivity)
+            {
+                t_DisplayTimer.schedule(DisplayTimer,timer);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

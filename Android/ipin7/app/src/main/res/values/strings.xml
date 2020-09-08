@@ -14,13 +14,18 @@
 
     <string name="StrTime">時間</string>
     <string name="StrMsg">訊息</string>
-    <string name="StrSpeed">速度</string>
+    <string name="StrSpeed">速度(m/s)</string>
     <string name="Stridx">筆數</string>
 
     <string name="cnt_del">歸零</string>
     <string name="cnt_reset">歸零</string>
     <string name="cnt_enter_dis">輸入單圈距離(m):  </string>
     <string name="m">m</string>
+
+    <string name="sen_start_detect">開始警戒</string>
+    <string name="sen_end_detect">關閉警戒</string>
+    <string name="sen_alarm_detect">觸發警報!!!</string>
+    <string name="sen_alarm_cancel">警報解除</string>
 
     <string name="bike_data_title">踏頻</string>
     <string name="bike_data_unit">rpm</string>

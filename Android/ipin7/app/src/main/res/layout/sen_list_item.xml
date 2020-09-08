@@ -12,23 +12,24 @@
             <View
                 style="@style/list_item_cell_seperator_layout" />
             <TextView
+                android:id="@+id/sen_tv_time"
                 android:layout_width="600px"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:background="@color/black"
-                android:gravity="center"
-                android:text="@string/StrTime"/>
+                android:autoSizeTextType="uniform"
+                android:gravity="center" />
 
             <View
                 style="@style/list_item_cell_seperator_layout" />
 
             <TextView
+                android:id="@+id/sen_tv_msg"
                 android:layout_width="600px"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@color/xml_sen_msg"
                 android:gravity="center"
-                android:background="@color/black"
-                android:text="@string/StrMsg"/>
+                android:background="@color/black" />
         </TableRow>
     </TableLayout>
 </LinearLayout >

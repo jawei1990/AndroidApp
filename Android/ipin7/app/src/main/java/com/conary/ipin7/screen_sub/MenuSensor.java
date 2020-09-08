@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,7 +15,10 @@ import com.conary.ipin7.R;
 import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.view.ScreenScale;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MenuSensor extends Activity implements View.OnClickListener
@@ -27,8 +31,7 @@ public class MenuSensor extends Activity implements View.OnClickListener
     private RelativeLayout guideLayout, displayLayout;
     private LinearLayout BtnDel;
     private ListView listView;
-    private View listTitle;
-
+    private sensorAdapter listAdapter;
     private List<ListSensor> sensorList= new ArrayList<>();
 
     @Override
@@ -76,14 +79,15 @@ public class MenuSensor extends Activity implements View.OnClickListener
         BtnDel = findViewById(R.id.sen_btnDel);
         BtnDel.setOnClickListener(this);
 
-        // ListView example
-        /*** https://www.itread01.com/content/1546974733.html
-         * http://www.wenyen.idv.tw/2018/04/program-androidstudio-20180419-listview-with-Header-And-Footer.html
-        */
+        listAdapter = new sensorAdapter(this,sensorList);
         listView = findViewById(R.id.sen_listView);
-        listTitle = (View) getLayoutInflater().inflate(R.layout.sen_list_title,null);
-        listView.addHeaderView(listTitle);
-        listView.setAdapter(null);
+        listView.setAdapter(listAdapter);
+
+/*        for(int i = 0; i < 10; i++)
+        {
+            ListSensor sensor = new ListSensor("12:" + i + "0","test" + i);
+            sensorList.add(sensor);
+        }*/
     }
 
     @Override
@@ -107,28 +111,74 @@ public class MenuSensor extends Activity implements View.OnClickListener
                     BtnRing.setSelected(false);
                     BtnOn.setSelected(false);
                     BtnOff.setSelected(false);
+                    stopDetect();
                 }
                 else
                 {
                     BtnRing.setSelected(true);
                     BtnOn.setSelected(true);
                     BtnOff.setSelected(true);
+                    startDetect();
                 }
             break;
             case R.id.sen_BtnOn:
                 BtnRing.setSelected(true);
                 BtnOn.setSelected(true);
                 BtnOff.setSelected(true);
+                //startDetect();
+                AlarmDetect();
                 break;
             case R.id.sen_BtnOff:
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
+                CancleAlarmDetect();
+                //stopDetect();
                 break;
             case R.id.sen_btnDel:
                 // Clean log
+                BtnOff.performClick();
+                sensorList.removeAll(sensorList);
+                listAdapter.notifyDataSetChanged();
                 break;
 
         }
+    }
+
+    void CancleAlarmDetect()
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        String strTime = TimerDateFormat.format(currentTime);
+        ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_alarm_cancel));
+        sensorList.add(list);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    void AlarmDetect()
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        String strTime = TimerDateFormat.format(currentTime);
+        ListSensor list  = new ListSensor(true,strTime,getString(R.string.sen_alarm_detect));
+        sensorList.add(list);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
+    void startDetect()
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        String strTime = TimerDateFormat.format(currentTime);
+        ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_start_detect));
+        sensorList.add(list);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    void stopDetect()
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        String strTime = TimerDateFormat.format(currentTime);
+        ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_end_detect));
+        sensorList.add(list);
+        listAdapter.notifyDataSetChanged();
     }
 }

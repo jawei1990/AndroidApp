@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal">
 
     <TableLayout
@@ -14,33 +14,36 @@
             style="@style/list_item_cell_seperator_layout" />
 
         <TextView
+            android:id="@+id/cnt_tv_idx"
             android:layout_width="200px"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:gravity="center"
-            android:text="@string/Stridx"
             android:textColor="@color/white" />
         <View
             style="@style/list_item_cell_seperator_layout" />
 
         <TextView
+            android:id="@+id/cnt_tv_time"
             android:layout_width="450px"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:gravity="center"
-            android:text="@string/StrTime"
             android:textColor="@color/white" />
 
         <View
             style="@style/list_item_cell_seperator_layout" />
 
         <TextView
+            android:id="@+id/cnt_tv_speed"
             android:layout_width="300px"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:gravity="center"
-            android:text="@string/StrSpeed"
             android:textColor="@color/white" />
+
+        <View
+            style="@style/list_item_seperator_layout" />
     </TableRow>
     </TableLayout>
 </LinearLayout >
