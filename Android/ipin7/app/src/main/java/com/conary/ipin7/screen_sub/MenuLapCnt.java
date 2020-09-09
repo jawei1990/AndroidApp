@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.adapter.ListRaceCnt;
@@ -20,6 +24,7 @@ import com.conary.ipin7.adapter.RaceCntAdapter;
 import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.UserPreferences;
+import com.conary.ipin7.utils.UtilConst;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -98,7 +103,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
         tv_dis = findViewById(R.id.tv_cnt_dis);
         tv_dis.setOnClickListener(this);
         tv_time = findViewById(R.id.tv_cnt_time);
-        tv_time.setOnClickListener(this); // Enable for test list data
+        tv_time.setOnClickListener(this); //TODO: Enable for test list data
 
         Btn0 = findViewById(R.id.cnt_Btn0);
         Btn1 = findViewById(R.id.cnt_Btn1);
@@ -157,32 +162,10 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
             break;
             case R.id.tv_cnt_time:
             {
-                // For test input data
-                try
-                {
-                    String StrTime = tv_time.getText().toString();
-                    String[] time = StrTime.split(":");
-                    double dis = Double.valueOf(tv_dis.getText().toString());
-                    double sec = 0;
-
-                    sec =  Double.valueOf(time[0]) * 60+  Double.valueOf(time[1]) +  Double.valueOf(time[2]) *  0.001;
-                    double speed = dis / sec;
-                    String StrSpeed = String.format("%.2f",speed);
-                    ListRaceCnt list  = new ListRaceCnt(StrTime,StrSpeed);
-                    cntList.add(list);
-                    listAdapter.notifyDataSetChanged();
-
-                    Log.e("Awei","time:" + StrTime + ",speed:" + StrSpeed);
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-
-                    String StrTime = tv_time.getText().toString();
-                    ListRaceCnt list  = new ListRaceCnt(StrTime,"Err Speed");
-                    cntList.add(list);
-                    listAdapter.notifyDataSetChanged();
-                }
+                //For testing
+                Message msg = new Message();
+                msg.what = UtilConst.CNT_UPDATE_DIS;
+                handler.sendMessage(msg);
             }
             break;
             case R.id.cnt_BtnNext:
@@ -283,6 +266,46 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
             break;
         }
     }
+
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what)
+            {
+                case UtilConst.CNT_UPDATE_DIS:
+                {
+                    // For test input data
+                    try
+                    {
+                        String StrTime = tv_time.getText().toString();
+                        String[] time = StrTime.split(":");
+                        double dis = Double.valueOf(tv_dis.getText().toString());
+                        double sec = 0;
+
+                        sec =  Double.valueOf(time[0]) * 60+  Double.valueOf(time[1]) +  Double.valueOf(time[2]) *  0.001;
+                        double speed = dis / sec;
+                        String StrSpeed = String.format("%.2f",speed);
+                        ListRaceCnt list  = new ListRaceCnt(StrTime,StrSpeed);
+                        cntList.add(list);
+                        listAdapter.notifyDataSetChanged();
+
+                        Log.e("Awei",listAdapter.getCount()+":time:" + StrTime + ",speed:" + StrSpeed);
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+
+                        String StrTime = tv_time.getText().toString();
+                        ListRaceCnt list  = new ListRaceCnt(StrTime,"Err Speed");
+                        cntList.add(list);
+                        listAdapter.notifyDataSetChanged();
+                    }
+                }
+                break;
+            }
+        }
+    };
 
     long startTime;
     void startCnt()

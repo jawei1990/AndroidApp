@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
@@ -18,6 +22,7 @@ import com.conary.ipin7.adapter.sensorAdapter;
 import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.DeviceData;
+import com.conary.ipin7.utils.UtilConst;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -102,6 +107,7 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
 
     @Override
     public void onClick(View v) {
+        Message msg = new Message();
         switch(v.getId())
         {
             case R.id.sen_BtnGuBack:
@@ -126,33 +132,42 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
                     BtnRing.setSelected(false);
                     BtnOn.setSelected(false);
                     BtnOff.setSelected(false);
-                    stopDetect();
+
+                    msg.what = UtilConst.SEN_STOP_DETECT;
+                    handler.sendMessage(msg);
                 }
                 else
                 {
                     BtnRing.setSelected(true);
                     BtnOn.setSelected(true);
                     BtnOff.setSelected(true);
-                    startDetect();
+
+                    msg.what = UtilConst.SEN_START_DETECT;
+                    handler.sendMessage(msg);
                 }
             break;
             case R.id.sen_BtnOn:
                 BtnRing.setSelected(true);
                 BtnOn.setSelected(true);
                 BtnOff.setSelected(true);
-                startDetect();
-//                AlarmDetect();
+
+                msg.what = UtilConst.SEN_START_DETECT;
+                handler.sendMessage(msg);
                 break;
             case R.id.sen_BtnOff:
                 BtnRing.setSelected(false);
                 BtnOn.setSelected(false);
                 BtnOff.setSelected(false);
-//                CancleAlarmDetect();
-                stopDetect();
+
+                msg.what = UtilConst.SEN_STOP_DETECT;
+                handler.sendMessage(msg);
                 break;
             case R.id.sen_btnDel:
                 // Clean log
-                BtnOff.performClick();
+                BtnRing.setSelected(false);
+                BtnOn.setSelected(false);
+                BtnOff.setSelected(false);
+
                 sensorList.removeAll(sensorList);
                 listAdapter.notifyDataSetChanged();
                 break;
@@ -195,6 +210,28 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
     }
+
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage( Message msg) {
+           switch(msg.what)
+           {
+               case UtilConst.SEN_START_DETECT:
+                   startDetect();
+                   break;
+               case UtilConst.SEN_STOP_DETECT:
+                   stopDetect();
+                   break;
+               case UtilConst.SEN_ALARM_DETECT:
+                   AlarmDetect();
+                   break;
+               case UtilConst.SEN_ALARM_CANCEL:
+                   CancleAlarmDetect();
+                   break;
+           }
+        }
+    };
 
     @Override
     public void UsbDebugLog(String str) {

@@ -32,8 +32,8 @@ public class ScreenScale
         DisplayMetrics dm = new DisplayMetrics();
         activity = ac;
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Log.d("Awei","dm.widthPixels:" + dm.widthPixels);
-        Log.d("Awei","dm.heightPixels:"+dm.heightPixels);
+        DataLog.d("dm.widthPixels:" + dm.widthPixels);
+        DataLog.d("dm.heightPixels:"+dm.heightPixels);
 
         if (dm.widthPixels>dm.heightPixels){
             if (design_height>design_width){

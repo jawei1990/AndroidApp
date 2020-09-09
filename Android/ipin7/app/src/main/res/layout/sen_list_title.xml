@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="1200px"
+    android:layout_height="100px"
     android:orientation="horizontal">
-    <TableLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="3">
-        <TableRow>
-            <View
-                style="@style/list_item_cell_seperator_layout" />
-            <TextView
-                android:layout_width="600px"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:background="@color/black"
-                android:gravity="center"
-                android:text="@string/StrTime"/>
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="@string/StrTime"/>
 
-            <View
-                style="@style/list_item_cell_seperator_layout" />
+    <View
+        style="@style/list_item_cell_seperator_layout" />
 
-            <TextView
-                android:layout_width="600px"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:background="@color/black"
-                android:text="@string/StrMsg"/>
-        </TableRow>
-    </TableLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:background="@color/black"
+        android:text="@string/StrMsg"/>
 </LinearLayout >

@@ -2,6 +2,8 @@ package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import com.conary.ipin7.adapter.ListMeasure;
 import com.conary.ipin7.adapter.measureAdapter;
 import com.conary.ipin7.usbModel.UsbModelImpl;
 import com.conary.ipin7.utils.DeviceData;
+import com.conary.ipin7.utils.UtilConst;
 import com.conary.ipin7.view.ScreenScale;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +40,6 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
     SimpleDateFormat TimerDateFormat = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
 
     private UsbModelImpl mUsb = MainApplication.getInstance().getUsbImp();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +162,21 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         listAdapter.notifyDataSetChanged();
     }
 
+
+    private Handler handler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            switch (msg.what)
+            {
+                case UtilConst.MEA_UPDATE_DIS:
+                    double StrData = (double) msg.obj;
+                    updateDistance(StrData);
+                    break;
+            }
+        }
+    };
+
     @Override
     public void UsbDebugLog(String str) {
 
@@ -170,8 +187,10 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         switch(data)
         {
             case DeviceData.DEVICE_UPDATE_DATA:
-                double StrData = (double) obj;
-                updateDistance((double) obj);
+                Message msg = new Message();
+                msg.what = UtilConst.MEA_UPDATE_DIS;
+                msg.obj = obj;
+                handler.sendMessage(msg);
                 break;
         }
     }

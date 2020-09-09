@@ -382,7 +382,7 @@
                     <ListView
                         android:id="@+id/cnt_listView"
                         android:layout_width="950px"
-                        android:layout_height="fill_parent"
+                        android:layout_height="490px"
                         android:divider="@color/gray"
                         android:dividerHeight="1.0dp"
                         android:scrollbars="vertical" />

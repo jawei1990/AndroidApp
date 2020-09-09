@@ -79,7 +79,7 @@
                 <ListView
                     android:id="@+id/sen_listView"
                     android:layout_width="1200px"
-                    android:layout_height="fill_parent"
+                    android:layout_height="970px"
                     android:background="@color/blackAlpha"
                     android:divider="@color/gray"
                     android:dividerHeight="1.0dp"
