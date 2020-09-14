@@ -48,7 +48,7 @@
                     <ListView
                         android:id="@+id/mea_listView"
                         android:layout_width="1000px"
-                        android:layout_height="800px"
+                        android:layout_height="700px"
                         android:background="@color/blackAlpha"
                         android:divider="@color/gray"
                         android:dividerHeight="1.0dp"

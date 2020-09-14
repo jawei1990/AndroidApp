@@ -289,6 +289,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
                         ListRaceCnt list  = new ListRaceCnt(StrTime,StrSpeed);
                         cntList.add(list);
                         listAdapter.notifyDataSetChanged();
+                        listView.setSelection(ListView.FOCUS_DOWN);
 
                         Log.e("Awei",listAdapter.getCount()+":time:" + StrTime + ",speed:" + StrSpeed);
                     }
@@ -300,6 +301,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
                         ListRaceCnt list  = new ListRaceCnt(StrTime,"Err Speed");
                         cntList.add(list);
                         listAdapter.notifyDataSetChanged();
+                        listView.setSelection(ListView.FOCUS_DOWN);
                     }
                 }
                 break;

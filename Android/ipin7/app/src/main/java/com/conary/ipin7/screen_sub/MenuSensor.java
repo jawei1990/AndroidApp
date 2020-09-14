@@ -182,6 +182,7 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
         ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_alarm_cancel));
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
     void AlarmDetect()
@@ -191,6 +192,7 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
         ListSensor list  = new ListSensor(true,strTime,getString(R.string.sen_alarm_detect));
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
     void startDetect()
@@ -200,6 +202,7 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
         ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_start_detect));
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
     void stopDetect()
@@ -209,6 +212,7 @@ public class MenuSensor extends Activity implements View.OnClickListener,UsbMode
         ListSensor list  = new ListSensor(false,strTime,getString(R.string.sen_end_detect));
         sensorList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
     private Handler handler = new Handler()

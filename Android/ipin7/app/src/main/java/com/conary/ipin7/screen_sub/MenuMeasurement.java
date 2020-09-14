@@ -139,6 +139,8 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
 
+        listView.setSelection(ListView.FOCUS_DOWN);
+
         Log.e("Awei","Dis:" + strDis);
     }
 
@@ -150,6 +152,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         ListMeasure list  = new ListMeasure(strTime,"開始測量");
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
     void stopDetect()
@@ -160,6 +163,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         ListMeasure list  = new ListMeasure(strTime,"關閉測量");
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
+        listView.setSelection(ListView.FOCUS_DOWN);
     }
 
 
