@@ -3,6 +3,7 @@
 2020/10/15 
 第二次再寫的 Output file, 還是花了不少時間再研究如何 Output log file.
 雖然開啟權限以外, 還遇到其他問題
+
     ```
      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
      <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
