@@ -39,7 +39,7 @@ public class DataLog
 
     private static String getTime()
     {
-        SimpleDateFormat date = new SimpleDateFormat("yyMMdd HH:mm");
+        SimpleDateFormat date = new SimpleDateFormat("yyMMdd HH:mm:ss.SSS");
         Calendar calDate = Calendar.getInstance();
         String time = date.format(calDate.getTime());
         return time;
@@ -57,9 +57,7 @@ public class DataLog
     }
 
     public static void appendLog(String text,String file_name) {
-        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
-        Calendar calDate = Calendar.getInstance();
-        String time = date.format(calDate.getTime());
+        String time = getTime();
         text = time + "---  " + text;
 
         File directory = new File(Environment.getExternalStorageDirectory()+File.separator+"iPin7");
