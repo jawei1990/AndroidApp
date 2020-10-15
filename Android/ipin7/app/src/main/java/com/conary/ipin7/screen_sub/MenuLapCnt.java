@@ -314,23 +314,6 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
         }
     };
 
-    private void getData()
-    {
-        Cursor mCursor = DataBase.selDataBase(DATABASE_TABLE);
-        Log.e("Awei","id:"+ mCursor.getCount());
-
-        for(int i = 0; i < mCursor.getCount()-1 ; i++)
-        {
-            Log.e("Awei","---------");
-            mCursor.moveToPosition(i);
-            int idx = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex("_idx")));
-            String date = mCursor.getString(mCursor.getColumnIndex("_date"));
-            double speed = Double.valueOf(mCursor.getString(mCursor.getColumnIndex("_speed")));
-            Log.e("Awei","idx:" + idx + ",date:" + date + ",speed:" + speed);
-        }
-
-    }
-
     long startTime;
     void startCnt()
     {
