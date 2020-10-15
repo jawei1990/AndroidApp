@@ -9,7 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.conary.ipin7.usbModel.UsbModelImpl;
-import com.conary.ipin7.utils.Database;
+import com.conary.ipin7.utils.DataBase;
 import com.conary.ipin7.utils.DeviceData;
 import com.conary.ipin7.utils.UserPreferences;
 
@@ -17,7 +17,7 @@ public class MainApplication extends Application
 {
     public static Activity mActivity;
     public static MainApplication mInstance;
-    public Database mDataBase;
+    public DataBase mDataBase;
     private UserPreferences mUserPreferences;
     private UsbManager mUserManager;
     private UsbModelImpl mUsb;
@@ -42,7 +42,7 @@ public class MainApplication extends Application
 
     void initDataBase()
     {
-        mDataBase = new Database(this);
+        mDataBase = new DataBase(this);
         mDataBase.open();
     }
 

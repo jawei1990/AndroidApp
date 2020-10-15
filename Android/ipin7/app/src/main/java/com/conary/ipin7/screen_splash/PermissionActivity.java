@@ -28,6 +28,13 @@ public class PermissionActivity extends AppCompatActivity implements PermissionV
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mPresenter.CheckHwPermission();
+    }
+
+    @Override
     public void ShowMainScreen() {
         String path = "";
         try

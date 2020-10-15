@@ -1,6 +1,7 @@
 package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,7 +17,9 @@ import com.conary.ipin7.MainApplication;
 import com.conary.ipin7.R;
 import com.conary.ipin7.adapter.ListMeasure;
 import com.conary.ipin7.adapter.measureAdapter;
+import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.usbModel.UsbModelImpl;
+import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.utils.DeviceData;
 import com.conary.ipin7.utils.UtilConst;
 import com.conary.ipin7.view.ScreenScale;
@@ -84,6 +87,11 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
     public void onClick(View v) {
         switch(v.getId())
         {
+            case R.id.mea_BtnReturn:
+                Intent intent = null;
+                intent  = new Intent(this, MainActivity.class);
+                this.startActivity(intent);
+                break;
             case R.id.mea_btnRing:
                 if(BtnRing.isSelected())
                 {
@@ -140,8 +148,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         listAdapter.notifyDataSetChanged();
 
         listView.setSelection(ListView.FOCUS_DOWN);
-
-        Log.e("Awei","Dis:" + strDis);
+        DataLog.Measure("Distance:" + strDis);
     }
 
     void startDetect()
@@ -153,6 +160,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
         listView.setSelection(ListView.FOCUS_DOWN);
+        DataLog.Measure("--------- Start Measure -----");
     }
 
     void stopDetect()
@@ -164,6 +172,7 @@ public class MenuMeasurement extends Activity implements View.OnClickListener, U
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
         listView.setSelection(ListView.FOCUS_DOWN);
+        DataLog.Measure("--------- Stop Measure -----");
     }
 
 

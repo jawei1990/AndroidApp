@@ -2,6 +2,7 @@ package com.conary.ipin7.screen_sub;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,10 +24,13 @@ import com.conary.ipin7.adapter.ListRaceCnt;
 import com.conary.ipin7.adapter.RaceCntAdapter;
 import com.conary.ipin7.screen_main.MainActivity;
 import com.conary.ipin7.usbModel.UsbModelImpl;
+import com.conary.ipin7.utils.DataBase;
+import com.conary.ipin7.utils.DataLog;
 import com.conary.ipin7.utils.UserPreferences;
 import com.conary.ipin7.utils.UtilConst;
 import com.conary.ipin7.view.ScreenScale;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
 
     private RelativeLayout guideLayout, displayLayout;
     private final int MaxInputLen = 4;
+    private final String DATABASE_TABLE = "LapCnt";
 
     private ListView listView;
     private List<ListRaceCnt> cntList = new ArrayList<>();
@@ -291,7 +296,7 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
                         listAdapter.notifyDataSetChanged();
                         listView.setSelection(ListView.FOCUS_DOWN);
 
-                        Log.e("Awei",listAdapter.getCount()+":time:" + StrTime + ",speed:" + StrSpeed);
+                        DataLog.LapCnt(listAdapter.getCount()+":time:" + StrTime + ",speed:" + StrSpeed);
                     }
                     catch(Exception e)
                     {
@@ -308,6 +313,23 @@ public class MenuLapCnt extends Activity implements View.OnClickListener,UsbMode
             }
         }
     };
+
+    private void getData()
+    {
+        Cursor mCursor = DataBase.selDataBase(DATABASE_TABLE);
+        Log.e("Awei","id:"+ mCursor.getCount());
+
+        for(int i = 0; i < mCursor.getCount()-1 ; i++)
+        {
+            Log.e("Awei","---------");
+            mCursor.moveToPosition(i);
+            int idx = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex("_idx")));
+            String date = mCursor.getString(mCursor.getColumnIndex("_date"));
+            double speed = Double.valueOf(mCursor.getString(mCursor.getColumnIndex("_speed")));
+            Log.e("Awei","idx:" + idx + ",date:" + date + ",speed:" + speed);
+        }
+
+    }
 
     long startTime;
     void startCnt()
