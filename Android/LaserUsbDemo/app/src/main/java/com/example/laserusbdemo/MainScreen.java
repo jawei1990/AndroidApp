@@ -55,9 +55,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     private UsbSerialPort usbSerialPort;
     private SerialService service;
 
-    private RelativeLayout layout,offsetLayout;
+    private RelativeLayout layout,offsetLayout,calLayout;
     private TextView receiveText,tv_hint;
-    private Button btnOn, btnOff, btnCal,btnOK;
+    private Button btnOn, btnOff, btnCal,btnOK,btnShots;
     private ImageView img_device,img_rotation;
     private TextView tv_status,tv_ver;
     private EditText ed_offset;
@@ -151,8 +151,11 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         super.onPause();
     }
 
+    private int MAX_CNT = 100;
+    private int cnt = 0;
     private float rotation = 180.0f;
     private boolean isRotation = false;
+    private boolean isShots = false;
     private boolean isDevMode = false;
     private int onStatus = 0; // on = 0, measure = 1
     @Override
@@ -187,6 +190,14 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             }
         });
         tv_ver = view.findViewById(R.id.tv_ver);
+
+        calLayout =  view.findViewById(R.id.calLayout);
+        btnShots =  view.findViewById(R.id.btnShots);
+        btnShots.setOnClickListener(v ->
+        {
+                isShots = true;
+                do_test();
+        });
 
         offset = mUserPreferences.getPrefOffsetData();
         Log.e("Awei","Offset:" + offset);
@@ -226,7 +237,10 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             {
                 try
                 {
-                    Thread.sleep(2000);
+                    btnOn.setEnabled(false);
+                    btnOff.setEnabled(false);
+                    btnCal.setEnabled(false);
+                    Thread.sleep(1000);
                     send("S");
                 }
                 catch(Exception e)
@@ -269,12 +283,12 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         {
             if(isDevMode)
             {
-                btnCal.setVisibility(View.INVISIBLE);
+                calLayout.setVisibility(View.INVISIBLE);
                 isDevMode = false;
             }
             else
             {
-                btnCal.setVisibility(View.VISIBLE);
+                calLayout.setVisibility(View.VISIBLE);
                 isDevMode = true;
             }
 
@@ -284,6 +298,20 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
 
         return view;
+    }
+
+    private void do_test()
+    {
+        try
+        {
+            send("E");
+            Thread.sleep(1000);
+            send("S");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     void refresh()
@@ -458,6 +486,25 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
+
+                    DataLog.e("DIST:" + str_dis);
+
+                    if(isShots)
+                    {
+                        cnt++;
+                        String str = cnt + "- Shots";
+                        btnShots.setText(str);
+
+                        if(cnt <= MAX_CNT )
+                        {
+                            do_test();
+                        }
+                        else
+                        {
+                            cnt = 0;
+                            btnShots.setText("BtnShots");
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -468,6 +515,8 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     btnCal.setEnabled(true);
                 }
                 Log.e("Awei","receiveText:" +elements_line[0] );
+
+
             }
             else if(msg.contains("V"))
             {

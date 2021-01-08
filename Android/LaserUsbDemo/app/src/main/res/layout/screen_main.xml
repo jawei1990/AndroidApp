@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/screen"
         android:layout_width="1080px"
-        android:layout_height="1450px"
+        android:layout_height="1650px"
         android:layout_centerInParent="true">
 
         <Button
@@ -26,15 +26,6 @@
             android:layout_below="@+id/btnOn"
             android:layout_marginTop="50px"
             android:text="Laser Off" />
-
-        <Button
-            android:id="@+id/btnCal"
-            android:layout_width="match_parent"
-            android:layout_height="200px"
-            android:layout_below="@+id/title_layout"
-            android:layout_marginTop="50px"
-            android:text="Calibration"
-            android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/title_layout"
@@ -67,6 +58,15 @@
                     android:layout_toLeftOf="@+id/tv_device_status"
                     android:background="@drawable/disconnect" />
 
+                <ImageView
+                    android:id="@+id/img_rotation"
+                    android:layout_width="150px"
+                    android:layout_height="150px"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/tv_device_status"
+                    android:background="@drawable/png_rotation" />
+
                 <TextView
                     android:id="@+id/tv_device_status"
                     android:layout_width="500px"
@@ -74,20 +74,34 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="20px"
                     android:layout_marginTop="10dp"
+                    android:autoSizeTextType="uniform"
                     android:text="Disconnected"
                     android:textColor="@color/colorWhite"
-                    android:textSize="30sp"
-                    android:autoSizeTextType="uniform"/>
-
-                <ImageView
-                    android:id="@+id/img_rotation"
-                    android:layout_width="150px"
-                    android:layout_height="150px"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/tv_device_status"
-                    android:background="@drawable/png_rotation"/>
+                    android:textSize="30sp" />
             </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/calLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_layout"
+            android:layout_marginTop="50px"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <Button
+                android:id="@+id/btnCal"
+                android:layout_width="match_parent"
+                android:layout_height="150px"
+                android:text="Calibration" />
+
+            <Button
+                android:id="@+id/btnShots"
+                android:layout_width="match_parent"
+                android:layout_height="150px"
+                android:text="Shots" />
         </LinearLayout>
 
         <TextView
