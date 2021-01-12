@@ -20,11 +20,6 @@ public class DataLog
         appendLog(message,"sdcard/LaserDemo/OutPut.txt");}
 
     public static void appendLog(String text,String file_name) {
-        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
-        Calendar calDate = Calendar.getInstance();
-        String time = date.format(calDate.getTime());
-        text = time + "---  " + text;
-
         File directory = new File(
                 Environment.getExternalStorageDirectory() + File.separator + "LaserDemo");
 

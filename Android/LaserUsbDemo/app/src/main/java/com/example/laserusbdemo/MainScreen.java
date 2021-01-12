@@ -43,6 +43,9 @@ import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 public class MainScreen extends Fragment implements ServiceConnection, SerialListener
 {
@@ -55,7 +58,8 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     private UsbSerialPort usbSerialPort;
     private SerialService service;
 
-    private RelativeLayout layout,offsetLayout,calLayout;
+    private RelativeLayout layout,offsetLayout;
+    private LinearLayout calLayout;
     private TextView receiveText,tv_hint;
     private Button btnOn, btnOff, btnCal,btnOK,btnShots;
     private ImageView img_device,img_rotation;
@@ -151,7 +155,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         super.onPause();
     }
 
-    private int MAX_CNT = 100;
+    private int MAX_CNT = 500;
     private int cnt = 0;
     private float rotation = 180.0f;
     private boolean isRotation = false;
@@ -195,8 +199,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         btnShots =  view.findViewById(R.id.btnShots);
         btnShots.setOnClickListener(v ->
         {
-                isShots = true;
-                do_test();
+            isShots = true;
+            DataLog.e("===== btnShots ====" + getTime());
+            do_test();
         });
 
         offset = mUserPreferences.getPrefOffsetData();
@@ -259,6 +264,8 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         btnOff = view.findViewById(R.id.btnOff);
         btnOff.setOnClickListener(v ->
         {
+            isShots = false;
+            cnt = 0;
             onStatus = 0;
             send("D");
             btnOn.setText("Laser On");
@@ -298,6 +305,14 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
 
         return view;
+    }
+
+    private String getTime()
+    {
+        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
+        Calendar calDate = Calendar.getInstance();
+        String time = date.format(calDate.getTime());
+        return time;
     }
 
     private void do_test()
@@ -487,10 +502,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
 
-                    DataLog.e("DIST:" + str_dis);
-
                     if(isShots)
                     {
+                        DataLog.e("[" + cnt+ "]:" + str_dis);
                         cnt++;
                         String str = cnt + "- Shots";
                         btnShots.setText(str);
@@ -501,9 +515,14 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                         }
                         else
                         {
+                            DataLog.e(" ===== Finish ======" + getTime());
                             cnt = 0;
-                            btnShots.setText("BtnShots");
+                            btnShots.setText("shots");
                         }
+                    }
+                    else
+                    {
+                        DataLog.e("Single Shot:" + str_dis);
                     }
                 }
                 catch (Exception e)
