@@ -168,7 +168,19 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
         offsetLayout = view.findViewById(R.id.offsetLayout);
         layout = view.findViewById(R.id.screen_main);
-        rotation = 180.0f;
+
+        boolean is360Rotation = mUserPreferences.getPrefRotationData();
+        if(is360Rotation)
+        {
+            isRotation = true;
+            rotation = 0.0f;
+        }
+        else
+        {
+            rotation = 180.f;
+            isRotation = false;
+        }
+
         layout.setRotation(rotation);
         receiveText = view.findViewById(R.id.tv_title);
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -176,33 +188,11 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         tv_status = view.findViewById(R.id.tv_device_status);
         img_device = view.findViewById(R.id.img_device);
         img_rotation = view.findViewById(R.id.img_rotation);
-        img_rotation.setOnClickListener(v ->
-        {
-            if(isRotation)
-            {
-                rotation = 180.f;
-                isRotation = false;
-                layout.setRotation(rotation);
-                offsetLayout.setRotation(rotation);
-            }
-            else
-            {
-                isRotation = true;
-                rotation = 0.0f;
-                layout.setRotation(rotation);
-                offsetLayout.setRotation(rotation);
-            }
-        });
+
         tv_ver = view.findViewById(R.id.tv_ver);
 
         calLayout =  view.findViewById(R.id.calLayout);
         btnShots =  view.findViewById(R.id.btnShots);
-        btnShots.setOnClickListener(v ->
-        {
-            isShots = true;
-            DataLog.e("===== btnShots ====" + getTime());
-            do_test();
-        });
 
         offset = mUserPreferences.getPrefOffsetData();
         Log.e("Awei","Offset:" + offset);
@@ -210,6 +200,49 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         ed_offset.setHint(String.valueOf(ed_offset));
         tv_hint = view.findViewById(R.id.tv_hint);
         btnOK = view.findViewById(R.id.btnOK);
+        btnOn = view.findViewById(R.id.btnOn);
+        btnOff = view.findViewById(R.id.btnOff);
+        btnCal = view.findViewById(R.id.btnCal);
+
+        boolean isVisible = mUserPreferences.getPrefVisibleData();
+        if(isVisible)
+        {
+            calLayout.setVisibility(View.VISIBLE);
+            isDevMode = true;
+        }
+        else
+        {
+            calLayout.setVisibility(View.INVISIBLE);
+            isDevMode = false;
+        }
+
+        img_rotation.setOnClickListener(v ->
+        {
+            if(isRotation)
+            {
+                rotation = 180.f;
+                isRotation = false;
+                mUserPreferences.setPrefRotationData(isRotation);
+                layout.setRotation(rotation);
+                offsetLayout.setRotation(rotation);
+            }
+            else
+            {
+                isRotation = true;
+                rotation = 0.0f;
+                mUserPreferences.setPrefRotationData(isRotation);
+                layout.setRotation(rotation);
+                offsetLayout.setRotation(rotation);
+            }
+        });
+
+        btnShots.setOnClickListener(v ->
+        {
+            isShots = true;
+            DataLog.e("===== btnShots ====" + getTime());
+            do_test();
+        });
+
         btnOK.setOnClickListener(v->{
             if(!ed_offset.getText().toString().equals(""))
             {
@@ -227,41 +260,40 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             }
         });
 
-        btnOn = view.findViewById(R.id.btnOn);
         btnOn.setOnClickListener(v ->
-        {
-            if(onStatus == 0)
-            {
-                btnCal.setEnabled(false);
-                send("E");
-                receiveText.setText("");
-                btnOn.setText("Measure");
-                onStatus = 1;
-            }
-            else if (onStatus == 1)
-            {
-                try
                 {
-                    btnOn.setEnabled(false);
-                    btnOff.setEnabled(false);
-                    btnCal.setEnabled(false);
-                    Thread.sleep(1000);
-                    send("S");
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
+                    if(onStatus == 0)
+                    {
+                        btnCal.setEnabled(false);
+                        send("E");
+                        receiveText.setText("");
+                        btnOn.setText("Measure");
+                        onStatus = 1;
+                    }
+                    else if (onStatus == 1)
+                    {
+                        try
+                        {
+                            btnOn.setEnabled(false);
+                            btnOff.setEnabled(false);
+                            btnCal.setEnabled(false);
+                            Thread.sleep(1000);
+                            send("S");
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
 
-                btnOn.setText("Laser On");
-                btnOn.setEnabled(true);
-                btnOff.setEnabled(true);
-                btnCal.setEnabled(true);
-                onStatus = 0;
-            }
-        }
+                        btnOn.setText("Laser On");
+                        btnOn.setEnabled(true);
+                        btnOff.setEnabled(true);
+                        btnCal.setEnabled(true);
+                        onStatus = 0;
+                    }
+                }
         );
-        btnOff = view.findViewById(R.id.btnOff);
+
         btnOff.setOnClickListener(v ->
         {
             isShots = false;
@@ -273,7 +305,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             btnOff.setEnabled(true);
             btnCal.setEnabled(true);
         });
-        btnCal = view.findViewById(R.id.btnCal);
+
         btnCal.setOnClickListener(v ->
         {
             send("C");
@@ -281,6 +313,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             btnOff.setEnabled(false);
             btnCal.setEnabled(false);
         });
+
         btnCal.setOnLongClickListener(v->{
             offsetLayout.setVisibility(View.VISIBLE);
             return false;
@@ -292,18 +325,17 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             {
                 calLayout.setVisibility(View.INVISIBLE);
                 isDevMode = false;
+                mUserPreferences.setPrefVisibleData(isDevMode);
             }
             else
             {
                 calLayout.setVisibility(View.VISIBLE);
                 isDevMode = true;
+                mUserPreferences.setPrefVisibleData(true);
             }
 
             return false;
         });
-
-
-
         return view;
     }
 
