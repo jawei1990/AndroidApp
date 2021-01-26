@@ -10,4 +10,6 @@
     <color name="colorStatusText">#FFDB58</color>
     <color name="RedColor">#E60012</color>
     <color name="black">#000000</color>
+
+    <color name="gray">#c8c8c8</color>
 </resources>

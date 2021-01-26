@@ -58,12 +58,12 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     private UsbSerialPort usbSerialPort;
     private SerialService service;
 
-    private RelativeLayout layout,offsetLayout;
+    private RelativeLayout layout,offsetLayout,debugLayout;
     private LinearLayout calLayout;
     private TextView receiveText,tv_hint;
-    private Button btnOn, btnOff, btnCal,btnOK,btnShots;
+    private Button btnOn, btnOff, btnCal,btnOK,btnShots,btnLog,btn_back;
     private ImageView img_device,img_rotation;
-    private TextView tv_status,tv_ver;
+    private TextView tv_status,tv_ver,tv_log;
     private EditText ed_offset;
 
     private MainScreen.Connected connected = MainScreen.Connected.False;
@@ -168,6 +168,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
         offsetLayout = view.findViewById(R.id.offsetLayout);
         layout = view.findViewById(R.id.screen_main);
+        debugLayout = view.findViewById(R.id.debugLayout);
 
         boolean is360Rotation = mUserPreferences.getPrefRotationData();
         if(is360Rotation)
@@ -181,7 +182,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             isRotation = false;
         }
 
+        debugLayout.setRotation(rotation);
         layout.setRotation(rotation);
+        offsetLayout.setRotation(rotation);
         receiveText = view.findViewById(R.id.tv_title);
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -197,12 +200,15 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         offset = mUserPreferences.getPrefOffsetData();
         Log.e("Awei","Offset:" + offset);
         ed_offset = view.findViewById(R.id.ed_offset);
-        ed_offset.setHint(String.valueOf(ed_offset));
+        ed_offset.setHint(String.valueOf(offset));
         tv_hint = view.findViewById(R.id.tv_hint);
         btnOK = view.findViewById(R.id.btnOK);
         btnOn = view.findViewById(R.id.btnOn);
         btnOff = view.findViewById(R.id.btnOff);
         btnCal = view.findViewById(R.id.btnCal);
+        btnLog = view.findViewById(R.id.btnLog);
+        btn_back = view.findViewById(R.id.btn_back);
+        tv_log = view.findViewById(R.id.tv_log);
 
         boolean isVisible = mUserPreferences.getPrefVisibleData();
         if(isVisible)
@@ -225,6 +231,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                 mUserPreferences.setPrefRotationData(isRotation);
                 layout.setRotation(rotation);
                 offsetLayout.setRotation(rotation);
+                debugLayout.setRotation(rotation);
             }
             else
             {
@@ -233,6 +240,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                 mUserPreferences.setPrefRotationData(isRotation);
                 layout.setRotation(rotation);
                 offsetLayout.setRotation(rotation);
+                debugLayout.setRotation(rotation);
             }
         });
 
@@ -267,28 +275,25 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                         btnCal.setEnabled(false);
                         send("E");
                         receiveText.setText("");
-                        btnOn.setText("Measure");
-                        onStatus = 1;
-                    }
-                    else if (onStatus == 1)
-                    {
+
                         try
                         {
-                            btnOn.setEnabled(false);
-                            btnOff.setEnabled(false);
-                            btnCal.setEnabled(false);
-                            Thread.sleep(1000);
-                            send("S");
+                            Thread.sleep(500);
                         }
                         catch(Exception e)
                         {
                             e.printStackTrace();
                         }
 
-                        btnOn.setText("Laser On");
-                        btnOn.setEnabled(true);
-                        btnOff.setEnabled(true);
-                        btnCal.setEnabled(true);
+                        btnOn.setText("Measure");
+                        onStatus = 1;
+                    }
+                    else if (onStatus == 1)
+                    {
+                        send("S");
+                        btnOn.setEnabled(false);
+                        btnOff.setEnabled(false);
+                        btnCal.setEnabled(false);
                         onStatus = 0;
                     }
                 }
@@ -314,8 +319,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             btnCal.setEnabled(false);
         });
 
-        btnCal.setOnLongClickListener(v->{
-            offsetLayout.setVisibility(View.VISIBLE);
+        btnOff.setOnLongClickListener(v->{
+            if(isDevMode)
+                offsetLayout.setVisibility(View.VISIBLE);
             return false;
         });
 
@@ -336,6 +342,10 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
             return false;
         });
+
+        btnLog.setOnClickListener(v -> debugLayout.setVisibility(View.VISIBLE));
+        btn_back.setOnClickListener(v -> debugLayout.setVisibility(View.INVISIBLE));
+
         return view;
     }
 
@@ -502,6 +512,13 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             btnCal.setEnabled(true);
         }
 
+
+        if(msg.contains("DB:"))
+        {
+            String str = msg + "\n" +tv_log.getText().toString();
+            tv_log.setText(str);
+        }
+
         if(newline.equals(TextUtil.newline_crlf) && msg.length() > 0)
         {
             // don't show CR as ^M if directly before LF
@@ -533,6 +550,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
+                    btnOn.setText("Laser On");
 
                     if(isShots)
                     {

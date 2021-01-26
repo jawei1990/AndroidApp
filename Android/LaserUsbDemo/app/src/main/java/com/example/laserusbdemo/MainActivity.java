@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
 {
-
+    public static  Activity activity;
     public static Context context = null;
 
     @Override
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         setContentView(R.layout.activity_main);
 
         context = this;
+        activity  = this;
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)
         {
