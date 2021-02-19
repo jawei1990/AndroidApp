@@ -7,6 +7,7 @@ public class UserPreferences
 {
     static final String LASER_DEMO_PREFS = "laseDemo_prefs";
 
+    private static final String PREF_OFFSET = LASER_DEMO_PREFS + ".offset";
     private static final String PREF_OFFSET_DATA = LASER_DEMO_PREFS + ".offset_data";
     private static final String PREF_VISIBLE_DATA = LASER_DEMO_PREFS + ".visible_data";
     private static final String PREF_ROTATION_DATA = LASER_DEMO_PREFS + ".rotation_data";
@@ -17,6 +18,16 @@ public class UserPreferences
         mSharedPreferences = context.getSharedPreferences(LASER_DEMO_PREFS, Context.MODE_PRIVATE);
         mContext = context;
     }
+
+    public void setPrefOffset(int value)
+    {
+        mSharedPreferences.edit().putInt(PREF_OFFSET, value).apply();
+    }
+
+    public int getPrefOffset() {
+        return mSharedPreferences.getInt(PREF_OFFSET, 0);
+    }
+
 
     public void setPrefOffsetData(int value)
     {

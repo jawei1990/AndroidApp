@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)
         {
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new MainScreen(), "devices").commit();
+            //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new MainScreen(), "devices").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new TestScreen(), "devices").commit();
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "devices").commit();
         } else
             onBackStackChanged();
@@ -72,13 +73,17 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     protected void onNewIntent(Intent intent) {
         if (intent.getAction().equals("android.hardware.usb.action.USB_DEVICE_ATTACHED"))
         {
-            MainScreen terminal = (MainScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+            //MainScreen terminal = (MainScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+            TestScreen terminal = (TestScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+
             if (terminal != null)
                 terminal.detected("USB device detected");
         }
         else if (intent.getAction().equals("android.hardware.usb.action.USB_DEVICE_DETACHED"))
         {
-            MainScreen terminal = (MainScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+            //MainScreen terminal = (MainScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+            TestScreen terminal = (TestScreen) getSupportFragmentManager().findFragmentByTag("terminal");
+
             if (terminal != null)
                 terminal.lost("Device Lost");
         }

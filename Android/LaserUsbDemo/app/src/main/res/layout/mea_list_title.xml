@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1080px"
+    android:layout_height="50px"
+    android:orientation="horizontal">
+
+    <View
+        style="@style/list_item_cell_seperator_layout" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="Number Of Times"/>
+
+    <View
+        style="@style/list_item_cell_seperator_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="Distance"/>
+    <View
+        style="@style/list_item_cell_seperator_layout" />
+</LinearLayout >

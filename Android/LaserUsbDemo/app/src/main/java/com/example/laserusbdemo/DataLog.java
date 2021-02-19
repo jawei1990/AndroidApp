@@ -17,8 +17,16 @@ public class DataLog
         Log.d(DEFAULT_TAG, message);
     }
     public static void e(final String message) { Log.e(DEFAULT_TAG, message);
-        appendLog(message,"sdcard/LaserDemo/OutPut.txt");}
+        appendLog(message,"sdcard/LaserDemo/OutPut.txt");
+    }
 
+    public static void debug(final String message) {
+        SimpleDateFormat date = new SimpleDateFormat("yyyy_MM_dd");
+        Calendar calDate = Calendar.getInstance();
+        String time = date.format(calDate.getTime());
+        String path = "sdcard/LaserDemo/" + time + ".txt";
+        appendLog(message,path);
+    }
     public static void appendLog(String text,String file_name) {
         File directory = new File(
                 Environment.getExternalStorageDirectory() + File.separator + "LaserDemo");

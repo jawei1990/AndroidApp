@@ -17,20 +17,16 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,10 +40,12 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
-public class MainScreen extends Fragment implements ServiceConnection, SerialListener
+public class TestScreen extends Fragment implements ServiceConnection, SerialListener
 {
     private Context context;
     private int baudRate = 256000;
@@ -58,20 +56,19 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     private UsbSerialPort usbSerialPort;
     private SerialService service;
 
-    private RelativeLayout layout,offsetLayout,debugLayout;
-    private LinearLayout calLayout;
-    private TextView receiveText,tv_hint;
-    private Button btnOn, btnOff, btnCal,btnOK,btnShots,btnLog,btn_back;
-    private ImageView img_device,img_rotation;
-    private TextView tv_status,tv_ver,tv_log;
-    private EditText ed_offset;
+    private TextView tv_status;
+    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput;
+    private EditText ed_sub,ed_device,ed_real;
+    private ListView listView;
+    private measureAdapter listAdapter;
+    private List<ListMeasure> measureList = new ArrayList<>();
 
-    private MainScreen.Connected connected = MainScreen.Connected.False;
+    private TestScreen.Connected connected = TestScreen.Connected.False;
     private boolean initialStart = true;
     private boolean pendingNewline = false;
     private String newline = TextUtil.newline_crlf;
 
-    public MainScreen()
+    public TestScreen()
     {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -103,7 +100,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
     @Override
     public void onDestroy() {
-        if (connected != MainScreen.Connected.False)
+        if (connected != TestScreen.Connected.False)
             disconnect();
         getActivity().stopService(new Intent(getActivity(), SerialService.class));
         super.onDestroy();
@@ -155,126 +152,36 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         super.onPause();
     }
 
-    private int MAX_CNT = 500;
-    private int cnt = 0;
-    private float rotation = 180.0f;
-    private boolean isRotation = false;
-    private boolean isShots = false;
-    private boolean isDevMode = false;
+    private int offset = 0;
     private int onStatus = 0; // on = 0, measure = 1
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.screen_main, container, false);
+        View view = inflater.inflate(R.layout.screen_test, container, false);
 
-        offsetLayout = view.findViewById(R.id.offsetLayout);
-        layout = view.findViewById(R.id.screen_main);
-        debugLayout = view.findViewById(R.id.debugLayout);
+        tv_status = view.findViewById(R.id.tv_dev);
+        ed_sub = view.findViewById(R.id.ed_sub);
+        ed_device = view.findViewById(R.id.ed_device);
+        ed_real = view.findViewById(R.id.ed_real);
 
-        boolean is360Rotation = mUserPreferences.getPrefRotationData();
-        if(is360Rotation)
-        {
-            isRotation = true;
-            rotation = 0.0f;
-        }
-        else
-        {
-            rotation = 180.f;
-            isRotation = false;
-        }
+        listAdapter = new measureAdapter(context,measureList);
+        listView = view.findViewById(R.id.dis_list);
+        listView.setAdapter(listAdapter);
 
-        debugLayout.setRotation(rotation);
-        layout.setRotation(rotation);
-        offsetLayout.setRotation(rotation);
-        receiveText = view.findViewById(R.id.tv_title);
-        receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
+        btnOn = view.findViewById(R.id.btnLaserOn);
+        btnOff = view.findViewById(R.id.btnLaserOff);
+        btnCal = view.findViewById(R.id.btnCali);
 
-        tv_status = view.findViewById(R.id.tv_device_status);
-        img_device = view.findViewById(R.id.img_device);
-        img_rotation = view.findViewById(R.id.img_rotation);
-
-        tv_ver = view.findViewById(R.id.tv_ver);
-
-        calLayout =  view.findViewById(R.id.calLayout);
-        btnShots =  view.findViewById(R.id.btnShots);
-
-        offset = mUserPreferences.getPrefOffsetData();
-        Log.e("Awei","Offset:" + offset);
-        ed_offset = view.findViewById(R.id.ed_offset);
-        ed_offset.setHint(String.valueOf(offset));
-        tv_hint = view.findViewById(R.id.tv_hint);
-        btnOK = view.findViewById(R.id.btnOK);
-        btnOn = view.findViewById(R.id.btnOn);
-        btnOff = view.findViewById(R.id.btnOff);
-        btnCal = view.findViewById(R.id.btnCal);
-        btnLog = view.findViewById(R.id.btnLog);
-        btn_back = view.findViewById(R.id.btn_back);
-        tv_log = view.findViewById(R.id.tv_log);
-
-        boolean isVisible = mUserPreferences.getPrefVisibleData();
-        if(isVisible)
-        {
-            calLayout.setVisibility(View.VISIBLE);
-            isDevMode = true;
-        }
-        else
-        {
-            calLayout.setVisibility(View.INVISIBLE);
-            isDevMode = false;
-        }
-
-        img_rotation.setOnClickListener(v ->
-        {
-            if(isRotation)
-            {
-                rotation = 180.f;
-                isRotation = false;
-                mUserPreferences.setPrefRotationData(isRotation);
-                layout.setRotation(rotation);
-                offsetLayout.setRotation(rotation);
-                debugLayout.setRotation(rotation);
-            }
-            else
-            {
-                isRotation = true;
-                rotation = 0.0f;
-                mUserPreferences.setPrefRotationData(isRotation);
-                layout.setRotation(rotation);
-                offsetLayout.setRotation(rotation);
-                debugLayout.setRotation(rotation);
-            }
-        });
-
-        btnShots.setOnClickListener(v ->
-        {
-            isShots = true;
-            DataLog.e("===== btnShots ====" + getTime());
-            do_test();
-        });
-
-        btnOK.setOnClickListener(v->{
-            if(!ed_offset.getText().toString().equals(""))
-            {
-                try
-                {
-                    offset = Integer.valueOf(ed_offset.getText().toString());
-                    mUserPreferences.setPrefOffsetData(offset);
-                    offsetLayout.setVisibility(View.INVISIBLE);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    tv_hint.setText("Wrong value...");
-                }
-            }
-        });
+        btnCleanDis = view.findViewById(R.id.btnCleanDis);
+        btnOutput = view.findViewById(R.id.btnLogOutPut);
 
         btnOn.setOnClickListener(v ->
+        {
+            if(connected == Connected.True)
             {
                 if(onStatus == 0)
                 {
                     btnCal.setEnabled(false);
                     send("E");
-                    receiveText.setText("");
 
                     try
                     {
@@ -297,12 +204,10 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     onStatus = 0;
                 }
             }
+        }
         );
 
-        btnOff.setOnClickListener(v ->
-        {
-            isShots = false;
-            cnt = 0;
+        btnOff.setOnClickListener(v ->{
             onStatus = 0;
             send("D");
             btnOn.setText("Laser On");
@@ -319,56 +224,78 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             btnCal.setEnabled(false);
         });
 
+        offset = mUserPreferences.getPrefOffset();
         btnOff.setOnLongClickListener(v->{
-            if(isDevMode)
-                offsetLayout.setVisibility(View.VISIBLE);
+            LinearLayout dialogDev = new LinearLayout(context);
+            dialogDev.setOrientation(LinearLayout.VERTICAL);
+            final RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(450,200);
+            LinearLayout L1 = new LinearLayout(context);
+            L1.setOrientation(LinearLayout.HORIZONTAL);
+            TextView t1 = new TextView(context);
+            t1.setWidth(200);
+            t1.setHeight(100);
+            t1.setText("Offset(mm):");
+            L1.addView(t1);
+            final EditText ed_min_dis = new EditText(context);
+            ed_min_dis.setLayoutParams(lparams);
+            ed_min_dis.setHint(String.valueOf(offset));
+            ed_min_dis.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            L1.addView(ed_min_dis);
+            dialogDev.addView(L1);
+
+            AlertDialog.Builder alert;
+            alert = new AlertDialog.Builder(context);
+            alert.setTitle("Set Offset:");
+
+            alert.setView(dialogDev);
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (!ed_min_dis.getText().toString().equals(""))
+                    {
+                        offset = Integer.valueOf(ed_min_dis.getText().toString());
+                        mUserPreferences.setPrefOffset(offset);
+                    }
+                }
+            });
+
             return false;
         });
 
-        tv_status.setOnLongClickListener(v ->
-        {
-            if(isDevMode)
-            {
-                calLayout.setVisibility(View.INVISIBLE);
-                isDevMode = false;
-                mUserPreferences.setPrefVisibleData(isDevMode);
-            }
-            else
-            {
-                calLayout.setVisibility(View.VISIBLE);
-                isDevMode = true;
-                mUserPreferences.setPrefVisibleData(true);
-            }
-
-            return false;
+        btnCleanDis.setOnClickListener(v -> {
+            measureList.removeAll(measureList);
+            listAdapter.notifyDataSetChanged();
         });
 
-        btnLog.setOnClickListener(v -> debugLayout.setVisibility(View.VISIBLE));
-        btn_back.setOnClickListener(v -> debugLayout.setVisibility(View.INVISIBLE));
+        btnOutput.setOnClickListener(v -> {
+            DataLog.debug("Date/Time;" + getTime() + "\n");
+            DataLog.debug("Subject;" + ed_sub.getText().toString() +"\n");
+            DataLog.debug("Module No;" + ed_device.getText().toString()+"\n");
+            DataLog.debug("Real D;" + ed_real.getText().toString() + "\n");
+            DataLog.debug("Offset;" + String.valueOf(offset) + "\n");
 
+            String dis = "Measure D;";
+            for(int i = 0; i < measureList.size(); i++)
+                dis+= measureList.get(i).getDis().toString() + ";";
+            DataLog.debug(dis + "\n");
+            DataLog.debug("---------------------------------"+ "\n");
+
+            AlertDialog.Builder alert;
+            alert = new AlertDialog.Builder(context);
+            alert.setTitle("Log Out Put Done !!!");
+            alert.setPositiveButton("OK", null);
+            alert.show();
+        });
         return view;
     }
 
     private String getTime()
     {
-        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
+        SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar calDate = Calendar.getInstance();
         String time = date.format(calDate.getTime());
         return time;
-    }
-
-    private void do_test()
-    {
-        try
-        {
-            send("E");
-            Thread.sleep(1000);
-            send("S");
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     void refresh()
@@ -460,7 +387,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             return;
         }
 
-        connected = MainScreen.Connected.Pending;
+        connected = TestScreen.Connected.Pending;
         try {
             usbSerialPort.open(usbConnection);
             usbSerialPort.setParameters(baudRate, UsbSerialPort.DATABITS_8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
@@ -475,7 +402,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     }
 
     private void disconnect() {
-        connected = MainScreen.Connected.False;
+        connected = TestScreen.Connected.False;
         service.disconnect();
         usbSerialPort = null;
         initialStart = true;
@@ -483,10 +410,9 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     }
 
     private void send(String str) {
-        if(connected != MainScreen.Connected.True) {
+        if(connected != TestScreen.Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             tv_status.setText("Disconnected");
-            img_device.setBackgroundResource(R.drawable.disconnect);
             return;
         }
         try {
@@ -499,36 +425,21 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         }
     }
 
-    int offset;
     private void receive(byte[] data) {
         String msg = new String(data);
         Log.e("Awei","receiveText:" + msg );
 
         if(msg.contains("Calib Done"))
         {
-            receiveText.setText("Calib Done");
             btnOn.setEnabled(true);
             btnOff.setEnabled(true);
             btnCal.setEnabled(true);
-        }
-
-
-        if(msg.contains("DB:"))
-        {
-            String str = msg + "\n" +tv_log.getText().toString();
-            tv_log.setText(str);
         }
 
         if(newline.equals(TextUtil.newline_crlf) && msg.length() > 0)
         {
             // don't show CR as ^M if directly before LF
             msg = msg.replace(TextUtil.newline_crlf, TextUtil.newline_lf);
-            // special handling if CR and LF come in separate fragments
-            if (pendingNewline && msg.charAt(0) == '\n') {
-                Editable edt = receiveText.getEditableText();
-                if (edt != null && edt.length() > 1)
-                    edt.replace(edt.length() - 2, edt.length(), "");
-            }
             pendingNewline = msg.charAt(msg.length() - 1) == '\r';
 
             if(msg.contains("DIST"))
@@ -545,40 +456,19 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
                     d += offset;
 
                     double dis = (double) d / 10;
-                    String str_dis = String.valueOf(dis) + " cm";
-                    receiveText.setText(str_dis);
+                    String str_dis = String.valueOf(dis);
+
+                    ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
+                    measureList.add(list);
+                    listAdapter.notifyDataSetChanged();
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
                     btnOn.setText("Laser On");
-
-                    if(isShots)
-                    {
-                        DataLog.e("[" + cnt+ "]:" + str_dis);
-                        cnt++;
-                        String str = cnt + "- Shots";
-                        btnShots.setText(str);
-
-                        if(cnt <= MAX_CNT )
-                        {
-                            do_test();
-                        }
-                        else
-                        {
-                            DataLog.e(" ===== Finish ======" + getTime());
-                            cnt = 0;
-                            btnShots.setText("shots");
-                        }
-                    }
-                    else
-                    {
-                        DataLog.e("Single Shot:" + str_dis);
-                    }
                 }
                 catch (Exception e)
                 {
                     String str_dis = elements_line[0];
-                    receiveText.setText(str_dis);
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
@@ -587,10 +477,6 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
 
             }
-            else if(msg.contains("V"))
-            {
-                tv_ver.setText(msg);
-            }
 
         }
     }
@@ -598,13 +484,13 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     void detected (String str)
     {
         tv_status.setText(str);
-        img_device.setBackgroundResource(R.drawable.connected);
+        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
     }
 
     void lost (String str)
     {
         tv_status.setText(str);
-        img_device.setBackgroundResource(R.drawable.disconnect);
+        tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
     }
 
     void status(String str) {
@@ -619,27 +505,27 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
 
         if(initialStart && isResumed()) {
             getActivity().runOnUiThread(this::connect);
-            send("V");
         }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         tv_status.setText("Disconnected");
-        img_device.setBackgroundResource(R.drawable.disconnect);
+        tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
     }
 
     @Override
     public void onSerialConnect() {
         status("Connected");
-        img_device.setBackgroundResource(R.drawable.connected);
-        connected = MainScreen.Connected.True;
+        connected = TestScreen.Connected.True;
+        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
     }
 
     @Override
     public void onSerialConnectError(Exception e) {
         //status("connection failed: " + e.getMessage());
         status("Connection failed");
+        tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
         disconnect();
     }
 
@@ -652,7 +538,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
     public void onSerialIoError(Exception e) {
         //status("connection lost: " + e.getMessage());
         status("Connection Lost");
-        img_device.setBackgroundResource(R.drawable.disconnect);
+        tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
         disconnect();
     }
 }
