@@ -390,7 +390,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
             {
                 for(int port = 0; port < driver.getPorts().size(); port++)
                 {
-                    if((device.getVendorId() == 6790) && (device.getProductId() == 29987))
+                    if((device.getVendorId() == 4292) && (device.getProductId() == 60000))
                     {
                         deviceId = device.getDeviceId();
                         portNum = port;
@@ -415,7 +415,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
         for(UsbDevice v : usbManager.getDeviceList().values())
         {
-            if((v.getVendorId() == 6790) && (v.getProductId() == 29987))
+            if((v.getVendorId() == 4292) && (v.getProductId() == 60000))
                 device = v;
         }
 
