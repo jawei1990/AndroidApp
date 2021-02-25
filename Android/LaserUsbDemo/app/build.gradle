@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.laserusbtest"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 2
         versionName "1.0"

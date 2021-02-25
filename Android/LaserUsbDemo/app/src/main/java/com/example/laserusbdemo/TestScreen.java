@@ -227,14 +227,14 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         });
 
         offset = mUserPreferences.getPrefOffset();
-        btnOff.setOnLongClickListener(v->{
+        btnCal.setOnLongClickListener(v->{
             LinearLayout dialogDev = new LinearLayout(context);
             dialogDev.setOrientation(LinearLayout.VERTICAL);
             final RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(450,200);
             LinearLayout L1 = new LinearLayout(context);
             L1.setOrientation(LinearLayout.HORIZONTAL);
             TextView t1 = new TextView(context);
-            t1.setWidth(200);
+            t1.setWidth(300);
             t1.setHeight(100);
             t1.setText("Offset(mm):");
             L1.addView(t1);
@@ -261,6 +261,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     }
                 }
             });
+
+            alert.show();
 
             return false;
         });
