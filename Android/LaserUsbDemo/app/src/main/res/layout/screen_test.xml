@@ -6,6 +6,15 @@
     android:background="@color/gray">
 
     <TextView
+        android:id="@+id/receive_text"
+        android:layout_width="match_parent"
+        android:layout_height="50px"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/gray"
+        android:textSize="12dp" />
+
+    <TextView
         android:id="@+id/tv_dev"
         android:layout_width="wrap_content"
         android:layout_height="50px"

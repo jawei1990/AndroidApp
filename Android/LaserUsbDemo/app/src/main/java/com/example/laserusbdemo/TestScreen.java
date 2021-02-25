@@ -56,6 +56,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private UsbSerialPort usbSerialPort;
     private SerialService service;
 
+    private TextView receiveText;
     private TextView tv_status;
     private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput;
     private EditText ed_sub,ed_device,ed_real;
@@ -158,6 +159,9 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.screen_test, container, false);
 
+        receiveText = view.findViewById(R.id.receive_text);                          // TextView performance decreases with number of spans
+        receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
+
         tv_status = view.findViewById(R.id.tv_dev);
         ed_sub = view.findViewById(R.id.ed_sub);
         ed_device = view.findViewById(R.id.ed_device);
@@ -199,7 +203,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                 {
                     send("S");
                     btnOn.setEnabled(false);
-                    btnOff.setEnabled(false);
                     btnCal.setEnabled(false);
                     onStatus = 0;
                 }
@@ -220,7 +223,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         {
             send("C");
             btnOn.setEnabled(false);
-            btnOff.setEnabled(false);
             btnCal.setEnabled(false);
         });
 
@@ -436,13 +438,19 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             btnCal.setEnabled(true);
         }
 
+     //   receiveText.setText(msg);
         if(newline.equals(TextUtil.newline_crlf) && msg.length() > 0)
         {
             // don't show CR as ^M if directly before LF
             msg = msg.replace(TextUtil.newline_crlf, TextUtil.newline_lf);
-            pendingNewline = msg.charAt(msg.length() - 1) == '\r';
+            // special handling if CR and LF come in separate fragments
+            if (pendingNewline && msg.charAt(0) == '\n') {
+                Editable edt = receiveText.getEditableText();
+                if (edt != null && edt.length() > 1)
+                    edt.replace(edt.length() - 2, edt.length(), "");
+            }
 
-            if(msg.contains("DIST"))
+            if(msg.contains("DIST:"))
             {
                 String[] elements = msg.split(":");
                 String str_data = elements[1];
@@ -461,21 +469,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
                     measureList.add(list);
                     listAdapter.notifyDataSetChanged();
-                    btnOn.setEnabled(true);
-                    btnOff.setEnabled(true);
-                    btnCal.setEnabled(true);
-                    btnOn.setText("Laser On");
+
                 }
                 catch (Exception e)
                 {
                     String str_dis = elements_line[0];
-                    btnOn.setEnabled(true);
-                    btnOff.setEnabled(true);
-                    btnCal.setEnabled(true);
                 }
                 Log.e("Awei","receiveText:" +elements_line[0] );
 
-
+                btnOn.setEnabled(true);
+                btnOff.setEnabled(true);
+                btnCal.setEnabled(true);
+                btnOn.setText("Laser On");
             }
 
         }
