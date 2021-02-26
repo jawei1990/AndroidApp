@@ -19,6 +19,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,6 +152,42 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     public void onPause() {
         getActivity().unregisterReceiver(broadcastReceiver);
         super.onPause();
+    }
+
+    void FragmentOnKeyDown(int key_code){
+        //do whatever you want here
+        if (key_code == KeyEvent.KEYCODE_VOLUME_DOWN || key_code == KeyEvent.KEYCODE_VOLUME_UP){
+            measure();
+        }
+    }
+
+    private void measure()
+    {
+        if(connected == Connected.True)
+        {
+            if (onStatus == 0)
+            {
+                btnCal.setEnabled(false);
+                send("E");
+
+                try
+                {
+                    Thread.sleep(500);
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                btnOn.setText("Measure");
+                onStatus = 1;
+            } else if (onStatus == 1)
+            {
+                send("S");
+                btnOn.setEnabled(false);
+                btnCal.setEnabled(false);
+                onStatus = 0;
+            }
+        }
     }
 
     private int offset = 0;
@@ -331,6 +368,16 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                             getActivity().runOnUiThread(this::connect);
                         }
                     }
+                    else if((device.getVendorId() == 6790) && (device.getProductId() == 29987))
+                    {
+                        deviceId = device.getDeviceId();
+                        portNum = port;
+
+                        if(initialStart && service != null)
+                        {
+                            getActivity().runOnUiThread(this::connect);
+                        }
+                    }
                 }
             }
         }
@@ -347,6 +394,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         for(UsbDevice v : usbManager.getDeviceList().values())
         {
             if((v.getVendorId() == 4292) && (v.getProductId() == 60000))
+                device = v;
+            else if((v.getVendorId() == 6790) && (v.getProductId() == 29987))
                 device = v;
         }
 

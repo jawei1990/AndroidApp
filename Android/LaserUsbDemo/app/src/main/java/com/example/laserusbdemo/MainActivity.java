@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 {
     public static  Activity activity;
     public static Context context = null;
+    private TestScreen mCurFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +30,23 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)
         {
+            mCurFragment = new TestScreen();
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new MainScreen(), "devices").commit();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new TestScreen(), "devices").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, mCurFragment, "devices").commit();
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "devices").commit();
         } else
             onBackStackChanged();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            if(mCurFragment!=null)
+                mCurFragment.FragmentOnKeyDown(keyCode);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
