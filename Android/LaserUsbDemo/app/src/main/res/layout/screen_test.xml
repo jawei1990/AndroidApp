@@ -8,10 +8,11 @@
     <TextView
         android:id="@+id/receive_text"
         android:layout_width="match_parent"
-        android:layout_height="50px"
-        android:layout_alignParentTop="true"
+        android:layout_height="150px"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/gray"
+        android:layout_alignParentTop="true"
+        android:background="@color/gray"
+        android:textColor="@color/black"
         android:textSize="12dp" />
 
     <TextView
@@ -146,7 +147,7 @@
                     <ListView
                         android:id="@+id/dis_list"
                         android:layout_width="match_parent"
-                        android:layout_height="800px"
+                        android:layout_height="650px"
                         android:background="@color/gray"
                         android:divider="@color/black"
                         android:dividerHeight="1.0dp"
@@ -168,7 +169,8 @@
                 android:layout_height="250px"
                 android:layout_marginLeft="50px"
                 android:layout_marginRight="50px"
-                android:text="Laser On / Measure"
+                android:layout_marginTop="25px"
+                android:text="Laser On"
                 android:textSize="16dp" />
 
             <Button
@@ -207,6 +209,14 @@
                 android:layout_height="250px"
                 android:text="Log Output"
                 android:textSize="16dp" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="450px"
+                android:layout_height="250px"
+                android:layout_marginLeft="10px"
+                android:textColor="@color/black"
+                android:textSize="10dp"/>
         </LinearLayout>
     </LinearLayout>
 

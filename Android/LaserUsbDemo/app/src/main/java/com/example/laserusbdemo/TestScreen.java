@@ -23,12 +23,15 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +52,7 @@ import java.util.List;
 public class TestScreen extends Fragment implements ServiceConnection, SerialListener
 {
     private Context context;
-    private int baudRate = 256000;
+    private int baudRate = 115200;
     private enum Connected { False, Pending, True }
 
     private final BroadcastReceiver broadcastReceiver;
@@ -62,6 +65,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput;
     private EditText ed_sub,ed_device,ed_real;
     private ListView listView;
+    private Spinner spinner;
     private measureAdapter listAdapter;
     private List<ListMeasure> measureList = new ArrayList<>();
 
@@ -167,21 +171,16 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         {
             if (onStatus == 0)
             {
+                receiveText.setText("");
                 btnCal.setEnabled(false);
-                send("E");
-
-                try
-                {
-                    Thread.sleep(500);
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                send("EE");
 
                 btnOn.setText("Measure");
                 onStatus = 1;
-            } else if (onStatus == 1)
+            }
+            else if (onStatus == 1)
             {
+                receiveText.setText("");
                 send("S");
                 btnOn.setEnabled(false);
                 btnCal.setEnabled(false);
@@ -190,6 +189,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     }
 
+    private AdapterView.OnItemSelectedListener spnOnItemSelected
+            = new AdapterView.OnItemSelectedListener() {
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+            mUserPreferences.setMode(pos);
+        }
+        public void onNothingSelected(AdapterView<?> parent) {
+            //
+        }
+    };
+
+    private ArrayAdapter<CharSequence> adapter;
     private int offset = 0;
     private int onStatus = 0; // on = 0, measure = 1
     @Override
@@ -204,6 +215,17 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         ed_device = view.findViewById(R.id.ed_device);
         ed_real = view.findViewById(R.id.ed_real);
 
+        spinner = view.findViewById(R.id.spinner);
+        adapter =  ArrayAdapter.createFromResource(context,
+                R.array.mode,
+                android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        int mode = mUserPreferences.getMode();
+        spinner.setSelection(mode, false);
+        spinner.setOnItemSelectedListener(spnOnItemSelected);
+
         listAdapter = new measureAdapter(context,measureList);
         listView = view.findViewById(R.id.dis_list);
         listView.setAdapter(listAdapter);
@@ -214,43 +236,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
         btnCleanDis = view.findViewById(R.id.btnCleanDis);
         btnOutput = view.findViewById(R.id.btnLogOutPut);
-
-        btnOn.setOnClickListener(v ->
-        {
-            if(connected == Connected.True)
-            {
-                if(onStatus == 0)
-                {
-                    btnCal.setEnabled(false);
-                    send("E");
-
-                    try
-                    {
-                        Thread.sleep(500);
-                    }
-                    catch(Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
-                    btnOn.setText("Measure");
-                    onStatus = 1;
-                }
-                else if (onStatus == 1)
-                {
-                    send("S");
-                    btnOn.setEnabled(false);
-                    btnCal.setEnabled(false);
-                    onStatus = 0;
-                }
-            }
-        }
-        );
+        btnOn.setOnClickListener(v -> measure());
 
         btnOff.setOnClickListener(v ->{
             onStatus = 0;
             send("D");
-            btnOn.setText("Laser On");
             btnOn.setEnabled(true);
             btnOff.setEnabled(true);
             btnCal.setEnabled(true);
@@ -378,6 +368,16 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                             getActivity().runOnUiThread(this::connect);
                         }
                     }
+                    else if((device.getVendorId() == 1027) && (device.getProductId() == 24597))
+                    {
+                        deviceId = device.getDeviceId();
+                        portNum = port;
+
+                        if(initialStart && service != null)
+                        {
+                            getActivity().runOnUiThread(this::connect);
+                        }
+                    }
                 }
             }
         }
@@ -396,6 +396,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             if((v.getVendorId() == 4292) && (v.getProductId() == 60000))
                 device = v;
             else if((v.getVendorId() == 6790) && (v.getProductId() == 29987))
+                device = v;
+            else if((v.getVendorId() == 1027) && (v.getProductId() == 24597))
                 device = v;
         }
 
@@ -471,7 +473,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         try {
             byte[] data;
             data = (str + newline).getBytes();
-            Log.e("Awei","send:" + str);
             service.write(data);
         } catch (Exception e) {
             onSerialIoError(e);
@@ -479,17 +480,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     }
 
     private void receive(byte[] data) {
+
         String msg = new String(data);
-        Log.e("Awei","receiveText:" + msg );
-
-        if(msg.contains("Calib Done"))
-        {
-            btnOn.setEnabled(true);
-            btnOff.setEnabled(true);
-            btnCal.setEnabled(true);
-        }
-
-     //   receiveText.setText(msg);
         if(newline.equals(TextUtil.newline_crlf) && msg.length() > 0)
         {
             // don't show CR as ^M if directly before LF
@@ -500,23 +492,106 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                 if (edt != null && edt.length() > 1)
                     edt.replace(edt.length() - 2, edt.length(), "");
             }
+            pendingNewline = msg.charAt(msg.length() - 1) == '\r';
+        }
+        receiveText.append(TextUtil.toCaretString(msg, newline.length() != 0));
+        String rx_data = receiveText.getText().toString();
 
-            if(msg.contains("DIST:"))
+        if(rx_data.contains("Calib Done"))
+        {
+            btnOn.setEnabled(true);
+            btnOff.setEnabled(true);
+            btnCal.setEnabled(true);
+        }
+        else if(rx_data.contains("DIST:") && rx_data.contains("mm"))
+        {
+            String[] elements = rx_data.split(":");
+            String str_data = elements[1];
+
+            String pattern_line = "mm";
+            String[] elements_line = str_data.split(pattern_line);
+
+            if(elements_line[0].contains("65535"))
             {
-                String[] elements = msg.split(":");
-                String str_data = elements[1];
-
-                String pattern_line = "mm";
-                String[] elements_line = str_data.split(pattern_line);
-
+                ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),"ERROR");
+                measureList.add(list);
+                listAdapter.notifyDataSetChanged();
+            }
+            else
+            {
                 try
                 {
-                    double d = Double.valueOf(elements_line[0]);
-                    d += offset;
+                    double off =  (double)offset/10;
+                    double d = Double.valueOf(elements_line[0])/10 + off;
+                    double tmp = 0;
+                    double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
+                    double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
 
-                    double dis = (double) d / 10;
+                    String ttt = "dis:" + Double.toString(d) + "\n";
+                    receiveText.append(ttt);
+
+                    if(spinner.getSelectedItemPosition() == 1)
+                    {
+                        a1 = 1.875E-08  ;
+                        b1 = -0.00000861;
+                        c1 = 0.001379   ;
+                        d1 = -0.08822   ;
+                        e1 = -0.04327   ;
+                        a2 = 0          ;
+                        b2 = -9.801E-10 ;
+                        c2 = 0.000001012;
+                        d2 = 0.004274   ;
+                        e2 = -2.13      ;
+                    }
+                    else if(spinner.getSelectedItemPosition() == 2)
+                    {
+                        a1 = 4.217E-08  ;
+                        b1 = -0.00001878;
+                        c1 = 0.002805   ;
+                        d1 = -0.1557    ;
+                        e1 = 0.436      ;
+                        a2 = -3.89E-12  ;
+                        b2 = 1.879E-08  ;
+                        c2 = -0.00003245;
+                        d2 = 0.02291    ;
+                        e2 = -4.816     ;
+                    }
+                    else if(spinner.getSelectedItemPosition() == 3)
+                    {
+                        a1 = 3.369E-09   ;
+                        b1 = -0.000001915;
+                        c1 = 0.000412    ;
+                        d1 = -0.03668    ;
+                        e1 = 0.01279     ;
+                        a2 = -2.425E-12  ;
+                        b2 = 1.039E-08   ;
+                        c2 = -0.00001674 ;
+                        d2 = 0.0127      ;
+                        e2 = -2.653      ;
+                    }
+
+                    if(d <= 200)
+                    {
+                        tmp = (a1 * Math.pow(d,4)) + (b1 * Math.pow(d,3)) + (c1 * Math.pow(d,2)) +
+                                (d1 * d) + e1;
+                    }
+                    else
+                    {
+                        tmp = (a2 * Math.pow(d,4)) + (b2 * Math.pow(d,3)) + (c2 * Math.pow(d,2)) +
+                                (d2 * d) + e2;
+                    }
+
+                    // d += offset;
+
+                    double dis = d - tmp ;
+
+                    ttt = "temp:" + Double.toString(tmp) + "\n";
+                    receiveText.append(ttt);
+
+                    ttt = "offset:" + Double.toString(off) + "\n";
+                    receiveText.append(ttt);
+
                     String str_dis = String.valueOf(dis);
-
                     ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
                     measureList.add(list);
                     listAdapter.notifyDataSetChanged();
@@ -527,13 +602,14 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     String str_dis = elements_line[0];
                 }
                 Log.e("Awei","receiveText:" +elements_line[0] );
-
-                btnOn.setEnabled(true);
-                btnOff.setEnabled(true);
-                btnCal.setEnabled(true);
-                btnOn.setText("Laser On");
             }
 
+
+
+            btnOn.setEnabled(true);
+            btnOff.setEnabled(true);
+            btnCal.setEnabled(true);
+            btnOn.setText("Laser On");
         }
     }
 

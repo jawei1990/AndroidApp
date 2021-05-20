@@ -50,7 +50,7 @@ import java.util.Calendar;
 public class MainScreen extends Fragment implements ServiceConnection, SerialListener
 {
     private Context context;
-    private int baudRate = 256000;
+    private int baudRate = 115200;
     private enum Connected { False, Pending, True }
 
     private final BroadcastReceiver broadcastReceiver;
