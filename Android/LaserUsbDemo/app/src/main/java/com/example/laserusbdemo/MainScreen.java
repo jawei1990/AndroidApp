@@ -595,7 +595,7 @@ public class MainScreen extends Fragment implements ServiceConnection, SerialLis
         }
     }
 
-    void detected (String str)
+   void detected (String str)
     {
         tv_status.setText(str);
         img_device.setBackgroundResource(R.drawable.connected);

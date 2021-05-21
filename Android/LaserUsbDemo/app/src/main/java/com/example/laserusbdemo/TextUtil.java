@@ -38,6 +38,24 @@ public class TextUtil
         return buf.toByteArray();
     }
 
+    public static long bytes2int(byte[] src){
+        int firstByte = 0;
+        int secondByte = 0;
+        int thirdByte = 0;
+        int fourthByte = 0;
+        int index = 0;
+        long anUnsignedInt = 0;
+
+        firstByte = (0x000000FF & ((int) src[index]));
+        secondByte = (0x000000FF & ((int) src[index+1]));
+        thirdByte = (0x000000FF & ((int) src[index+2]));
+        fourthByte = (0x000000FF & ((int) src[index+3]));
+
+        anUnsignedInt  = ( (fourthByte<<24|thirdByte<<16|secondByte<<8|firstByte));
+        return anUnsignedInt  ;
+    }
+
+
     static String toHexString(final byte[] buf) {
         return toHexString(buf, 0, buf.length);
     }

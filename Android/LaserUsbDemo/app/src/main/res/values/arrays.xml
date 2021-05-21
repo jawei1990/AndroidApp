@@ -25,4 +25,14 @@
         <item>No.2</item>
         <item>No.3</item>
     </string-array>
+
+    <string-array name="grade">
+        <item>grade 2</item>
+        <item>grade 3</item>
+    </string-array>
+
+    <string-array name="grade_class">
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
