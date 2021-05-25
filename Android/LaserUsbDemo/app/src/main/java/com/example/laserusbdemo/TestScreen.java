@@ -640,11 +640,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             Log.e("Awei","dis:" + dis_mm);
             if( dis_mm != 65535 || debug.equals("FFFFFFFF"))
             {
-                dis_mm /= 10;
                 try
                 {
+                    String d_org = Long.toString(dis_mm);
                     double off =  (double)offset/10;
-                    double d = (double) dis_mm + off;
+                    double d = Double.valueOf(d_org)/10  + off;
                     double tmp = 0;
                     double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
                     double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
