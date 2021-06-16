@@ -206,9 +206,8 @@
                 android:id="@+id/btnCleanDis"
                 android:layout_width="300px"
                 android:layout_height="250px"
-                android:layout_marginLeft="50px"
-                android:layout_marginRight="50px"
                 android:layout_gravity="center"
+                android:layout_marginRight="5px"
                 android:text="Clean Screen"
                 android:textSize="16dp" />
 
@@ -222,11 +221,16 @@
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="550px"
+                android:layout_width="500px"
                 android:layout_height="250px"
-                android:layout_marginLeft="10px"
                 android:textColor="@color/black"
-                android:textSize="10dp"/>
+                android:textSize="10dp" />
+
+            <Button
+                android:id="@+id/btnForce"
+                android:layout_width="200px"
+                android:layout_height="250px"
+                android:text="回連" />
         </LinearLayout>
 
         <LinearLayout

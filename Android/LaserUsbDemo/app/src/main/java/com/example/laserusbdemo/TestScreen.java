@@ -62,7 +62,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     private TextView receiveText;
     private TextView tv_status;
-    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,BtnVoltSet;
+    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,BtnVoltSet,btnForce;
     private EditText ed_sub,ed_device,ed_real,ed_dac_volt;
     private ListView listView;
     private Spinner spinner,grade,volt_grade;
@@ -241,6 +241,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         ed_sub = view.findViewById(R.id.ed_sub);
         ed_device = view.findViewById(R.id.ed_device);
         ed_real = view.findViewById(R.id.ed_real);
+
+        btnForce = view.findViewById(R.id.btnForce);
+        btnForce.setOnClickListener(v -> {
+            forceReconnected();
+        });
 
         spinner = view.findViewById(R.id.spinner);
         adapter =  ArrayAdapter.createFromResource(context,
@@ -444,6 +449,14 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         Calendar calDate = Calendar.getInstance();
         String time = date.format(calDate.getTime());
         return time;
+    }
+
+    void forceReconnected()
+    {
+        disconnect();
+        tv_status.setText("Disconnected");
+        tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
+        refresh();
     }
 
     void refresh()
