@@ -262,13 +262,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="250px"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="50px"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="grade:"/>
+                android:layout_marginLeft="50px"
+                android:text="grade:" />
 
             <Spinner
                 android:id="@+id/sp_grade_c"
@@ -277,11 +279,12 @@
                 android:layout_marginLeft="10px"
                 android:textColor="@color/black"
                 android:textSize="10dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="volt:"/>
+                android:text="volt:" />
 
             <EditText
                 android:id="@+id/ed_volt"
