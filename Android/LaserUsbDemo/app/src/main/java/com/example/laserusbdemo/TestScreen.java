@@ -712,14 +712,14 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
                 try
                 {
-                    long dis_mm = 0;
+                 /*   long dis_mm = 0;
                     for(int i = 0; i < 4; i++)
                     {
                         long test = (byte) data[i+3] & 0xFF;
                         dis_mm += test * Math.pow(256,i);
                         Log.e("Awei","test:" + test+",dis:" + dis_mm);
-                    }
-                            //= (((data[6] << 8)<<8)<<8) | ((data[5] << 8)<<8) | (data[4] << 8) |data[3];
+                    }*/
+                    long dis_mm = (((data[6] << 8)<<8)<<8) | ((data[5] << 8)<<8) | (data[4] << 8) |data[3] & 0xFF;
                     Log.e("Awei","d:" + dis_mm);
 
                     String d_org = Long.toString(dis_mm);
