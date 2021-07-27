@@ -452,6 +452,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             alert.setPositiveButton("OK", null);
             alert.show();
         });
+
         return view;
     }
 
@@ -672,6 +673,13 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     }
 
+    private void addToList(String str)
+    {
+        ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str);
+        measureList.add(list);
+        listAdapter.notifyDataSetChanged();
+    }
+
     private void receive(byte[] data)
     {
         String msg = new String(data);
@@ -704,7 +712,14 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
                 try
                 {
-                    long dis_mm = (((data[6] << 8)<<8)<<8) | ((data[5] << 8)<<8) | (data[4] << 8) |data[3];
+                    long dis_mm = 0;
+                    for(int i = 0; i < 4; i++)
+                    {
+                        long test = (byte) data[i+3] & 0xFF;
+                        dis_mm += test * Math.pow(256,i);
+                        Log.e("Awei","test:" + test+",dis:" + dis_mm);
+                    }
+                            //= (((data[6] << 8)<<8)<<8) | ((data[5] << 8)<<8) | (data[4] << 8) |data[3];
                     Log.e("Awei","d:" + dis_mm);
 
                     String d_org = Long.toString(dis_mm);
@@ -836,9 +851,62 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             }
             else
             {
-                ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),"ERROR");
-                measureList.add(list);
-                listAdapter.notifyDataSetChanged();
+                if(header.equals("0E"))
+                {
+                    int err = data[1] & 0xFF;
+                    switch (err)
+                    {
+                       case 131: // 0x83
+                           addToList("distance out of range");
+                           break;
+                       case 132: // 0x84
+                           addToList("cmd not found");
+                           break;
+                       case 133: // 0x85
+                           addToList("laser not enable");
+                           break;
+                       case 134: // 0x86
+                           addToList("device params not found");
+                           break;
+                       case 135: // 0x87
+                           addToList("wait for cmd repeat");
+                           break;
+                       case 136: // 0x88
+                           addToList("ID exist");
+                           break;
+                       case 137: // 0x89
+                           addToList("Low SNR");
+                           break;
+                    }
+
+                    if(status_mode == 0 || status_mode == 2)
+                    {
+                        btnOn.setEnabled(true);
+                        btnOff.setEnabled(true);
+                        btnCal.setEnabled(true);
+                        BtnShots.setEnabled(true);
+                        btnOn.setText("Laser On");
+                        status_mode = 0;
+                    }
+                    if(status_mode == 3)
+                    {
+                        //cnt++;
+
+                        if(cnt < CNT_MAX)
+                        {
+                            //send("O");
+                            sendStrByte("CD010607");
+                        }
+                        else
+                        {
+                            //send("D");
+                            sendStrByte("CD010405");
+                            cnt = 0;
+                            status_mode = 0;
+                        }
+                    }
+
+                }
             }
 /*            long dis_mm = TextUtil.bytes2int(data);
             Log.e("Awei","dis:" + dis_mm);
