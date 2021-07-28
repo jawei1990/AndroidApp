@@ -434,9 +434,12 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         });
 
         btnOutput.setOnClickListener(v -> {
+            String[] level_str = getResources().getStringArray(R.array.grade);
+
             DataLog.debug("Date/Time;" + getTime() + "\n");
             DataLog.debug("Subject;" + ed_sub.getText().toString() +"\n");
             DataLog.debug("Module No;" + ed_device.getText().toString()+"\n");
+            DataLog.debug("Grade;" + level_str[grade_idx]+"\n");
             DataLog.debug("Real D;" + ed_real.getText().toString() + "\n");
             DataLog.debug("Offset;" + String.valueOf(offset) + "\n");
 
@@ -719,8 +722,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                         dis_mm += test * Math.pow(256,i);
                         Log.e("Awei","test:" + test+",dis:" + dis_mm);
                     }*/
-                    long dis_mm = (((data[6] << 8)<<8)<<8) | ((data[5] << 8)<<8) | (data[4] << 8) |data[3] & 0xFF;
-                    Log.e("Awei","d:" + dis_mm);
+                    long dis_mm = (((data[6] << 8)<<8)<<8) & 0xFF000000;
+                    dis_mm +=((data[5] << 8)<<8) & 0xFF0000;
+                    dis_mm += (data[4] << 8)& 0xFF00;
+                    dis_mm += data[3] & 0xFF;
+                    Log.e("Awei","dis_mm:" + dis_mm);
 
                     String d_org = Long.toString(dis_mm);
                     double off =  (double)offset/10;
@@ -729,9 +735,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
                     double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
 
-                    String ttt = "--> d:" + Double.toString(d) + "\n";
+                    String ttt = "--> d:" + String.format("%.1f",Double.valueOf(d))+ "\n";
                     receiveText.append(ttt);
-
                     if(spinner.getSelectedItemPosition() == 1)
                     {
                         a1 = 1.875E-08  ;
@@ -793,7 +798,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     ttt = "offset:" + Double.toString(off) + "\n";
                     receiveText.append(ttt);
 
-                    String str_dis = String.valueOf(dis);
+                    String str_dis = String.format("%.1f",Double.valueOf(dis)) ;//String.valueOf(dis);
                     ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
                     measureList.add(list);
                     listAdapter.notifyDataSetChanged();
@@ -829,6 +834,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    Log.e("Awei","exception:" + e.toString());
 
                     if(status_mode == 3)
                     {
