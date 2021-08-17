@@ -728,13 +728,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             if(header.equals("FA"))
             {
                 try {
-                 /*   long dis_mm = 0;
-                    for(int i = 0; i < 4; i++)
-                    {
-                        long test = (byte) data[i+3] & 0xFF;
-                        dis_mm += test * Math.pow(256,i);
-                        Log.e("Awei","test:" + test+",dis:" + dis_mm);
-                    }*/
                     long time = (((data[6] << 8) << 8) << 8) & 0xFF000000;
                     time += ((data[5] << 8) << 8) & 0xFF0000;
                     time += (data[4] << 8) & 0xFF00;
@@ -806,13 +799,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
                 try
                 {
-                 /*   long dis_mm = 0;
-                    for(int i = 0; i < 4; i++)
-                    {
-                        long test = (byte) data[i+3] & 0xFF;
-                        dis_mm += test * Math.pow(256,i);
-                        Log.e("Awei","test:" + test+",dis:" + dis_mm);
-                    }*/
                     long dis_mm = (((data[6] << 8)<<8)<<8) & 0xFF000000;
                     dis_mm +=((data[5] << 8)<<8) & 0xFF0000;
                     dis_mm += (data[4] << 8)& 0xFF00;
@@ -985,118 +971,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
                 }
             }
-/*            long dis_mm = TextUtil.bytes2int(data);
-            Log.e("Awei","dis:" + dis_mm);
-            if( dis_mm != 65535 || debug.equals("FFFFFFFF"))
-            {
-                try
-                {
-                    String d_org = Long.toString(dis_mm);
-                    double off =  (double)offset/10;
-                    double d = Double.valueOf(d_org)/10  + off;
-                    double tmp = 0;
-                    double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
-                    double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
-
-                    String ttt = "--> d:" + Double.toString(d) + "\n";
-                    receiveText.append(ttt);
-
-                    if(spinner.getSelectedItemPosition() == 1)
-                    {
-                        a1 = 1.875E-08  ;
-                        b1 = -0.00000861;
-                        c1 = 0.001379   ;
-                        d1 = -0.08822   ;
-                        e1 = -0.04327   ;
-                        a2 = 0          ;
-                        b2 = -9.801E-10 ;
-                        c2 = 0.000001012;
-                        d2 = 0.004274   ;
-                        e2 = -2.13      ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 2)
-                    {
-                        a1 = 4.217E-08  ;
-                        b1 = -0.00001878;
-                        c1 = 0.002805   ;
-                        d1 = -0.1557    ;
-                        e1 = 0.436      ;
-                        a2 = -3.89E-12  ;
-                        b2 = 1.879E-08  ;
-                        c2 = -0.00003245;
-                        d2 = 0.02291    ;
-                        e2 = -4.816     ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 3)
-                    {
-                        a1 = 3.369E-09   ;
-                        b1 = -0.000001915;
-                        c1 = 0.000412    ;
-                        d1 = -0.03668    ;
-                        e1 = 0.01279     ;
-                        a2 = -2.425E-12  ;
-                        b2 = 1.039E-08   ;
-                        c2 = -0.00001674 ;
-                        d2 = 0.0127      ;
-                        e2 = -2.653      ;
-                    }
-
-                    if(d <= 200)
-                    {
-                        tmp = (a1 * Math.pow(d,4)) + (b1 * Math.pow(d,3)) + (c1 * Math.pow(d,2)) +
-                                (d1 * d) + e1;
-                    }
-                    else
-                    {
-                        tmp = (a2 * Math.pow(d,4)) + (b2 * Math.pow(d,3)) + (c2 * Math.pow(d,2)) +
-                                (d2 * d) + e2;
-                    }
-
-                    // d += offset;
-
-                    double dis = d - tmp ;
-
-                    ttt = "temp:" + Double.toString(tmp) + "\n";
-                    receiveText.append(ttt);
-
-                    ttt = "offset:" + Double.toString(off) + "\n";
-                    receiveText.append(ttt);
-
-                    String str_dis = String.valueOf(dis);
-                    ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
-                    measureList.add(list);
-                    listAdapter.notifyDataSetChanged();
-
-                    if(status_mode == 3)
-                    {
-                        cnt++;
-
-                        if(cnt < CNT_MAX)
-                        {
-                            //send("O");
-                            sendStrByte("CD010607");
-                        }
-                        else
-                        {
-                            //send("D");
-                            sendStrByte("CD010405");
-                            cnt = 0;
-                            status_mode = 0;
-                        }
-                    }
-
-                }
-                catch (Exception e)
-                {
-                   e.printStackTrace();
-                }
-            }
-            else
-            {
-                ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),"ERROR");
-                measureList.add(list);
-                listAdapter.notifyDataSetChanged();
-            }*/
         }
         else if(status_mode == 0 || status_mode == 2)
         {
