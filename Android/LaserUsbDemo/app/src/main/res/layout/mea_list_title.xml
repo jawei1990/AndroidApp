@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:textColor="@color/black"
         android:gravity="center"
-        android:text="Number Of Times"/>
+        android:text="No."/>
 
     <View
         style="@style/list_item_cell_seperator_layout" />
@@ -25,6 +25,15 @@
         android:textColor="@color/black"
         android:gravity="center"
         android:text="Distance"/>
+    <View
+        style="@style/list_item_cell_seperator_layout" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="Times(ms)"/>
     <View
         style="@style/list_item_cell_seperator_layout" />
 </LinearLayout >

@@ -227,7 +227,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     };
 
-    private int status_mode; // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration
+    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration
+    private int status_mode;
     private final int CNT_MAX = 5;
     private int cnt;
     private int grade_idx, dac_grade_idx;
@@ -368,6 +369,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
         btnOff.setOnClickListener(v ->{
             status_mode = 0;
+            clean_list();
             //send("D");
             sendStrByte("CD010405");
             BtnShots.setEnabled(true);
@@ -447,6 +449,12 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             for(int i = 0; i < measureList.size(); i++)
                 dis+= measureList.get(i).getDis().toString() + ";";
             DataLog.debug(dis + "\n");
+            DataLog.debug("---------------------------------"+ "\n");
+
+            String time = "Measure time;";
+            for(int i = 0; i < measureList.size(); i++)
+                time+= measureList.get(i).getTimes().toString() + ";";
+            DataLog.debug(time + "\n");
             DataLog.debug("---------------------------------"+ "\n");
 
             AlertDialog.Builder alert;
@@ -678,11 +686,21 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     private void addToList(String str)
     {
-        ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str);
+        ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str,"");
         measureList.add(list);
         listAdapter.notifyDataSetChanged();
     }
 
+    private void clean_list()
+    {
+        tmp_list.setId("");
+        tmp_list.setDis("");
+        tmp_list.setTime("");
+        isGetTime = false;
+    }
+
+    private ListMeasure tmp_list = new ListMeasure("","","");
+    private boolean isGetTime = false;
     private void receive(byte[] data)
     {
         String msg = new String(data);
@@ -704,7 +722,80 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         receiveText.append(TextUtil.toCaretString(debug, newline.length() != 0));
 
         Log.e("Awei","status:" + status_mode);
-        if(status_mode == 2 || status_mode == 3)
+        if(isGetTime)
+        {
+            String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
+            if(header.equals("FA"))
+            {
+                try {
+                 /*   long dis_mm = 0;
+                    for(int i = 0; i < 4; i++)
+                    {
+                        long test = (byte) data[i+3] & 0xFF;
+                        dis_mm += test * Math.pow(256,i);
+                        Log.e("Awei","test:" + test+",dis:" + dis_mm);
+                    }*/
+                    long time = (((data[6] << 8) << 8) << 8) & 0xFF000000;
+                    time += ((data[5] << 8) << 8) & 0xFF0000;
+                    time += (data[4] << 8) & 0xFF00;
+                    time += data[3] & 0xFF;
+                    Log.e("Awei", "time:" + time);
+
+                    String t_org = Long.toString(time);
+                    double ms = Double.valueOf(t_org)/1000;
+
+                    String ttt = "--> t:" + String.format("%.3f",Double.valueOf(ms))+ "\n";
+                    receiveText.append(ttt);
+
+                    Log.e("Awei","id:" + tmp_list.getId());
+                    Log.e("Awei","dis:" + tmp_list.getDis());
+
+                    ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),String.format("%.3f",Double.valueOf(ms)));
+                    measureList.add(list);
+                    listAdapter.notifyDataSetChanged();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    Log.e("Awei","exception:" + e.toString());
+
+                    ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
+                    measureList.add(list);
+                    listAdapter.notifyDataSetChanged();
+                }
+
+                clean_list();
+
+                if(status_mode == 3)
+                {
+                    cnt++;
+
+                    if(cnt < CNT_MAX)
+                    {
+                        //send("O");
+                        sendStrByte("CD010607");
+                    }
+                    else
+                    {
+                        //send("D");
+                        sendStrByte("CD010405");
+                        cnt = 0;
+                        status_mode = 0;
+                    }
+                }
+
+                if(status_mode == 0 || status_mode == 2)
+                {
+                    btnOn.setEnabled(true);
+                    btnOff.setEnabled(true);
+                    btnCal.setEnabled(true);
+                    BtnShots.setEnabled(true);
+                    btnOn.setText("Laser On");
+                    status_mode = 0;
+                }
+            }
+        }
+        else if(status_mode == 2 || status_mode == 3 )
         {
             Log.e("Awei","Data: ------"+ data[0]);
             String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
@@ -799,37 +890,17 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     receiveText.append(ttt);
 
                     String str_dis = String.format("%.1f",Double.valueOf(dis)) ;//String.valueOf(dis);
-                    ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
+               /*
+                    ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis,str_time);
                     measureList.add(list);
                     listAdapter.notifyDataSetChanged();
+                */
+                    tmp_list.setId(String.valueOf(measureList.size()));
+                    tmp_list.setDis(str_dis);
 
-                    if(status_mode == 3)
-                    {
-                        cnt++;
-
-                        if(cnt < CNT_MAX)
-                        {
-                            //send("O");
-                            sendStrByte("CD010607");
-                        }
-                        else
-                        {
-                            //send("D");
-                            sendStrByte("CD010405");
-                            cnt = 0;
-                            status_mode = 0;
-                        }
-                    }
-
-                    if(status_mode == 0 || status_mode == 2)
-                    {
-                        btnOn.setEnabled(true);
-                        btnOff.setEnabled(true);
-                        btnCal.setEnabled(true);
-                        BtnShots.setEnabled(true);
-                        btnOn.setText("Laser On");
-                        status_mode = 0;
-                    }
+                    isGetTime = true;
+                    // Get time
+                    sendStrByte("CD1110010628");
                 }
                 catch (Exception e)
                 {
@@ -896,7 +967,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     }
                     if(status_mode == 3)
                     {
-                        //cnt++;
+                        cnt++;
 
                         if(cnt < CNT_MAX)
                         {
