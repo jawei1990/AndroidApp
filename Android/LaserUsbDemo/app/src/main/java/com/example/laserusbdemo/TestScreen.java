@@ -808,6 +808,10 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     status_mode = 0;
                 }
             }
+            else
+            {
+                Log.e("Awei","get timer error");
+            }
         }
         else if(status_mode == 2 || status_mode == 3 )
         {
@@ -993,6 +997,12 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                 }
             }
         }
+        else if(status_mode == 6)
+        {
+            //sendByte(DEBUG_MODE);
+            sendStrByte("CD010203");
+            status_mode = 5;
+        }
         else if(status_mode == 5)
         {
             if(data[2] == 0x06)
@@ -1070,11 +1080,8 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         connected = TestScreen.Connected.True;
         tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
 
-        //sendByte(DEBUG_MODE);
-        sendStrByte("CD010203");
-        status_mode = 5;
-
         sendStrByte("CD050106");
+        status_mode = 6;
     }
 
     @Override

@@ -213,6 +213,7 @@
                 android:layout_width="300px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
+                android:checked="true"
                 android:textOff="D_CAL OFF"
                 android:textOn="D_CAL ON"
                 android:textSize="14dp" />
