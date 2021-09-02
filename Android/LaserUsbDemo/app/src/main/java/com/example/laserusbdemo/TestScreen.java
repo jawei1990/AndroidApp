@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,8 +65,9 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private SerialService service;
 
     private TextView receiveText;
-    private TextView tv_status;
+    private TextView tv_status,tv_ver;
     private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,BtnVoltSet,btnForce;
+    private ToggleButton btnDisEn;
     private EditText ed_sub,ed_device,ed_real,ed_dac_volt;
     private ListView listView;
     private Spinner spinner,grade,volt_grade;
@@ -227,7 +230,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     };
 
-    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration
+    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration, 5: get version
     private int status_mode;
     private final int CNT_MAX = 5;
     private int cnt;
@@ -243,6 +246,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         tv_status = view.findViewById(R.id.tv_dev);
+        tv_ver = view.findViewById(R.id.tv_ver);
         ed_sub = view.findViewById(R.id.ed_sub);
         ed_device = view.findViewById(R.id.ed_device);
         ed_real = view.findViewById(R.id.ed_real);
@@ -297,6 +301,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         BtnShots = view.findViewById(R.id.btnShots);
         BtnGradeSet = view.findViewById(R.id.btnSetGrade);
         BtnVoltSet = view.findViewById(R.id.btnSet);
+        btnDisEn = view.findViewById(R.id.btnDisEn);
 
         btnCleanDis = view.findViewById(R.id.btnCleanDis);
         btnOutput = view.findViewById(R.id.btnLogOutPut);
@@ -376,6 +381,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             btnOn.setEnabled(true);
             btnOff.setEnabled(true);
             btnCal.setEnabled(true);
+        });
+
+        btnDisEn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.e("Awei","Distance Cal Status:" + isChecked);
+                if (isChecked) {
+                    TestScreen.this.sendStrByte("CD0A242E");
+                } else {
+                    TestScreen.this.sendStrByte("CD0A232D");
+                }
+            }
         });
 
         btnCal.setOnClickListener(v ->
@@ -480,6 +497,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         disconnect();
         tv_status.setText("Disconnected");
         tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
+        tv_ver.setText("");
         refresh();
     }
 
@@ -623,6 +641,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         if(connected != TestScreen.Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             tv_status.setText("Disconnected");
+            tv_ver.setText("");
             tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
             return;
         }
@@ -655,6 +674,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         if(connected != TestScreen.Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             tv_status.setText("Disconnected");
+            tv_ver.setText("");
             tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
             return;
         }
@@ -672,6 +692,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         if(connected != TestScreen.Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             tv_status.setText("Disconnected");
+            tv_ver.setText("");
             tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
             return;
         }
@@ -972,6 +993,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                 }
             }
         }
+        else if(status_mode == 5)
+        {
+            if(data[2] == 0x06)
+            {
+                String str_ver = String.valueOf(data[3]) + "." + String.valueOf(data[4])
+                        + "-20" + String.valueOf(data[5])
+                        + "/" +String.valueOf(data[6])
+                        + "/"  +String.valueOf(data[7]);
+                tv_ver.setText(str_ver);
+                status_mode = 0;
+            }
+        }
         else if(status_mode == 0 || status_mode == 2)
         {
             if(debug.contains("FA 00 01 01"))
@@ -993,139 +1026,6 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             btnCal.setEnabled(true);
             BtnShots.setEnabled(true);
         }
-
-/*        if(rx_data.contains("Calib Done"))
-        {
-            btnOn.setEnabled(true);
-            btnOff.setEnabled(true);
-            btnCal.setEnabled(true);
-            BtnShots.setEnabled(true);
-        }
-        else if(rx_data.contains("DIST:") && rx_data.contains("mm"))
-        {
-            String[] elements = rx_data.split(":");
-            String str_data = elements[1];
-
-            String pattern_line = "mm";
-            String[] elements_line = str_data.split(pattern_line);
-
-            if(elements_line[0].contains("65535"))
-            {
-                ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),"ERROR");
-                measureList.add(list);
-                listAdapter.notifyDataSetChanged();
-            }
-            else
-            {
-                try
-                {
-                    double off =  (double)offset/10;
-                    double d = Double.valueOf(elements_line[0])/10 + off;
-                    double tmp = 0;
-                    double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
-                    double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
-
-                    String ttt = "dis:" + Double.toString(d) + "\n";
-                    receiveText.append(ttt);
-
-                    if(spinner.getSelectedItemPosition() == 1)
-                    {
-                        a1 = 1.875E-08  ;
-                        b1 = -0.00000861;
-                        c1 = 0.001379   ;
-                        d1 = -0.08822   ;
-                        e1 = -0.04327   ;
-                        a2 = 0          ;
-                        b2 = -9.801E-10 ;
-                        c2 = 0.000001012;
-                        d2 = 0.004274   ;
-                        e2 = -2.13      ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 2)
-                    {
-                        a1 = 4.217E-08  ;
-                        b1 = -0.00001878;
-                        c1 = 0.002805   ;
-                        d1 = -0.1557    ;
-                        e1 = 0.436      ;
-                        a2 = -3.89E-12  ;
-                        b2 = 1.879E-08  ;
-                        c2 = -0.00003245;
-                        d2 = 0.02291    ;
-                        e2 = -4.816     ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 3)
-                    {
-                        a1 = 3.369E-09   ;
-                        b1 = -0.000001915;
-                        c1 = 0.000412    ;
-                        d1 = -0.03668    ;
-                        e1 = 0.01279     ;
-                        a2 = -2.425E-12  ;
-                        b2 = 1.039E-08   ;
-                        c2 = -0.00001674 ;
-                        d2 = 0.0127      ;
-                        e2 = -2.653      ;
-                    }
-
-                    if(d <= 200)
-                    {
-                        tmp = (a1 * Math.pow(d,4)) + (b1 * Math.pow(d,3)) + (c1 * Math.pow(d,2)) +
-                                (d1 * d) + e1;
-                    }
-                    else
-                    {
-                        tmp = (a2 * Math.pow(d,4)) + (b2 * Math.pow(d,3)) + (c2 * Math.pow(d,2)) +
-                                (d2 * d) + e2;
-                    }
-
-                    // d += offset;
-
-                    double dis = d - tmp ;
-
-                    ttt = "temp:" + Double.toString(tmp) + "\n";
-                    receiveText.append(ttt);
-
-                    ttt = "offset:" + Double.toString(off) + "\n";
-                    receiveText.append(ttt);
-
-                    String str_dis = String.valueOf(dis);
-                    ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis);
-                    measureList.add(list);
-                    listAdapter.notifyDataSetChanged();
-
-                   if(isShotsMode)
-                   {
-                       cnt++;
-
-                       if(cnt < CNT_MAX)
-                       {
-                            send("O");
-                       }
-                       else
-                       {
-                           send("D");
-                           isShotsMode = false;
-                       }
-                   }
-
-                }
-                catch (Exception e)
-                {
-                    String str_dis = elements_line[0];
-                }
-                Log.e("Awei","receiveText:" +elements_line[0] );
-            }
-
-            if(!isShotsMode)
-            {
-                btnOn.setEnabled(true);
-                btnOff.setEnabled(true);
-                btnCal.setEnabled(true);
-                BtnShots.setEnabled(true);
-                btnOn.setText("Laser On");
-            }
-        }*/
     }
 
     void detected (String str)
@@ -1158,6 +1058,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     @Override
     public void onServiceDisconnected(ComponentName name) {
         tv_status.setText("Disconnected");
+        tv_ver.setText("");
         tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
     }
 
@@ -1170,6 +1071,9 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
 
         //sendByte(DEBUG_MODE);
+        sendStrByte("CD010203");
+        status_mode = 5;
+
         sendStrByte("CD050106");
     }
 

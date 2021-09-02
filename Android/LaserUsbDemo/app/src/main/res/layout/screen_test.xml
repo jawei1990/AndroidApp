@@ -14,22 +14,35 @@
         android:background="@color/gray"
         android:textColor="@color/black"
         android:textSize="12dp" />
-
-    <TextView
-        android:id="@+id/tv_dev"
+    <LinearLayout
+        android:id="@+id/top_title"
         android:layout_width="wrap_content"
         android:layout_height="50px"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/black"
-        android:textSize="12dp"
-        android:background="@color/RedColor"
-        android:text="Disconnected"/>
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/tv_ver"
+            android:layout_width="wrap_content"
+            android:layout_height="50px"
+            android:textColor="@color/black"
+            android:textSize="12dp"/>
+        <TextView
+            android:id="@+id/tv_dev"
+            android:layout_width="wrap_content"
+            android:layout_height="50px"
+            android:textColor="@color/black"
+            android:textSize="12dp"
+            android:background="@color/RedColor"
+            android:text="Disconnected"/>
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_dev"
+        android:layout_below="@+id/top_title"
         android:orientation="vertical">
 
         <LinearLayout
@@ -165,28 +178,27 @@
 
             <Button
                 android:id="@+id/btnLaserOn"
-                android:layout_width="300px"
+                android:layout_width="275px"
                 android:layout_height="250px"
-                android:layout_marginLeft="50px"
                 android:layout_gravity="center"
                 android:text="Laser On"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnLaserOff"
-                android:layout_width="90dp"
+                android:layout_width="275px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
                 android:text="Laser Off"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnShots"
-                android:layout_width="90dp"
+                android:layout_width="280px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
                 android:text="Shots"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnCali"
@@ -194,7 +206,16 @@
                 android:layout_height="250px"
                 android:layout_gravity="center"
                 android:text="Cali./ Offset"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
+
+            <ToggleButton
+                android:id="@+id/btnDisEn"
+                android:layout_width="300px"
+                android:layout_height="250px"
+                android:layout_gravity="center"
+                android:textOff="D_CAL OFF"
+                android:textOn="D_CAL ON"
+                android:textSize="14dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -204,20 +225,20 @@
 
             <Button
                 android:id="@+id/btnCleanDis"
-                android:layout_width="300px"
+                android:layout_width="310px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
                 android:layout_marginRight="5px"
                 android:text="Clean Screen"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnLogOutPut"
-                android:layout_width="300px"
+                android:layout_width="320px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
                 android:text="Log Output"
-                android:textSize="16dp" />
+                android:textSize="14dp" />
 
             <Spinner
                 android:id="@+id/spinner"
@@ -228,7 +249,7 @@
 
             <Button
                 android:id="@+id/btnForce"
-                android:layout_width="200px"
+                android:layout_width="250px"
                 android:layout_height="250px"
                 android:text="回連" />
         </LinearLayout>
