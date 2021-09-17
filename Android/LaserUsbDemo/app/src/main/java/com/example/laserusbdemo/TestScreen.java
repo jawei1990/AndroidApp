@@ -28,7 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -45,10 +44,8 @@ import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -67,7 +64,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private TextView receiveText;
     private TextView tv_status,tv_ver;
     private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,BtnVoltSet,btnForce;
-    private ToggleButton btnDisEn;
+    private ToggleButton btnDisEn,btnPhase;
     private EditText ed_sub,ed_device,ed_real,ed_dac_volt;
     private ListView listView;
     private Spinner spinner,grade,volt_grade;
@@ -302,6 +299,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         BtnGradeSet = view.findViewById(R.id.btnSetGrade);
         BtnVoltSet = view.findViewById(R.id.btnSet);
         btnDisEn = view.findViewById(R.id.btnDisEn);
+        btnPhase = view.findViewById(R.id.btnPhase);
 
         btnCleanDis = view.findViewById(R.id.btnCleanDis);
         btnOutput = view.findViewById(R.id.btnLogOutPut);
@@ -388,9 +386,21 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.e("Awei","Distance Cal Status:" + isChecked);
                 if (isChecked) {
-                    TestScreen.this.sendStrByte("CD0A242E");
-                } else {
                     TestScreen.this.sendStrByte("CD0A232D");
+                } else {
+                    TestScreen.this.sendStrByte("CD0A242E");
+                }
+            }
+        });
+
+        btnPhase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.e("Awei","Phase:" + isChecked);
+                if (isChecked) {
+                    TestScreen.this.sendStrByte("CD1107000119");
+                } else {
+                    TestScreen.this.sendStrByte("CD1107000018");
                 }
             }
         });

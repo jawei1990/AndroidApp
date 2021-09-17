@@ -213,6 +213,7 @@
                 android:layout_width="300px"
                 android:layout_height="250px"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:checked="true"
                 android:textOff="D_CAL OFF"
                 android:textOn="D_CAL ON"
@@ -279,6 +280,17 @@
                 android:layout_height="200px"
                 android:layout_gravity="center"
                 android:text="Set" />
+
+            <ToggleButton
+                android:id="@+id/btnPhase"
+                android:layout_width="300px"
+                android:layout_height="250px"
+                android:layout_gravity="center"
+                android:checked="true"
+                android:textOff="Phase off"
+                android:textOn="Phase on"
+                android:textSize="14dp" />
+
         </LinearLayout>
 
         <LinearLayout
