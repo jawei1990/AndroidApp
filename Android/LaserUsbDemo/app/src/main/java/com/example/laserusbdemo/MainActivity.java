@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 {
     public static  Activity activity;
     public static Context context = null;
+    public static String path;
     private TestScreen mCurFragment;
 
     @Override
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
         context = this;
         activity  = this;
+        path = getFilePath();
+        Log.e("Awei","path:" + path);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)
         {
@@ -36,6 +39,32 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "devices").commit();
         } else
             onBackStackChanged();
+    }
+
+    private String getFilePath()
+    {
+        String path = "";
+        try
+        {
+            path = getExternalFilesDir(null).getPath().toString();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        if (path.equals(""))
+        {
+            try
+            {
+                path = getFilesDir().getPath().toString();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return path;
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

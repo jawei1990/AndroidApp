@@ -38,7 +38,6 @@
     </LinearLayout>
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -47,7 +46,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -73,7 +73,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -99,7 +100,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -126,6 +128,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -173,46 +176,52 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnLaserOn"
-                android:layout_width="275px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Laser On"
                 android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnLaserOff"
-                android:layout_width="275px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Laser Off"
                 android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnShots"
-                android:layout_width="280px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Shots"
                 android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnCali"
-                android:layout_width="300px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Cali./ Offset"
                 android:textSize="14dp" />
 
             <ToggleButton
                 android:id="@+id/btnDisEn"
-                android:layout_width="300px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:checked="true"
                 android:textOff="D_CAL OFF"
                 android:textOn="D_CAL ON"
@@ -221,109 +230,93 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnCleanDis"
-                android:layout_width="310px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="5px"
+                android:layout_weight="1"
                 android:text="Clean Screen"
                 android:textSize="14dp" />
 
             <Button
                 android:id="@+id/btnLogOutPut"
-                android:layout_width="320px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Log Output"
                 android:textSize="14dp" />
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="500px"
+                android:layout_width="400px"
                 android:layout_height="250px"
+                android:layout_weight="2"
                 android:textColor="@color/black"
                 android:textSize="10dp" />
 
             <Button
                 android:id="@+id/btnForce"
-                android:layout_width="250px"
-                android:layout_height="250px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="回連" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50px"
-                android:layout_gravity="center"
-                android:text="grade:"/>
-
-            <Spinner
-                android:id="@+id/sp_grade"
-                android:layout_width="550px"
-                android:layout_height="250px"
-                android:layout_marginLeft="10px"
-                android:textColor="@color/black"
-                android:textSize="10dp" />
-            <Button
-                android:id="@+id/btnSetGrade"
-                android:layout_width="200px"
-                android:layout_height="200px"
-                android:layout_gravity="center"
-                android:text="Set" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="250px"
-            android:orientation="horizontal"
-            android:visibility="invisible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="50px"
+                android:layout_weight="1"
                 android:text="grade:" />
 
             <Spinner
-                android:id="@+id/sp_grade_c"
-                android:layout_width="350px"
+                android:id="@+id/sp_grade"
+                android:layout_width="wrap_content"
                 android:layout_height="250px"
                 android:layout_marginLeft="10px"
+                android:layout_weight="2"
                 android:textColor="@color/black"
                 android:textSize="10dp" />
 
-            <TextView
+            <Button
+                android:id="@+id/btnSetGrade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="volt:" />
-
-            <EditText
-                android:id="@+id/ed_volt"
-                android:layout_width="300px"
-                android:layout_height="200px"
-                android:layout_gravity="center"
-                android:inputType="number"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btnSet"
-                android:layout_width="200px"
-                android:layout_height="200px"
-                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Set" />
 
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/app_ver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

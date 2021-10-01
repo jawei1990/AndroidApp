@@ -14,6 +14,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.InputType;
@@ -65,12 +66,12 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private SerialService service;
 
     private TextView receiveText;
-    private TextView tv_status,tv_ver;
-    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,BtnVoltSet,btnForce;
+    private TextView tv_status,tv_ver,tvAppVer;
+    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,btnForce;
     private ToggleButton btnDisEn;
-    private EditText ed_sub,ed_device,ed_real,ed_dac_volt;
+    private EditText ed_sub,ed_device,ed_real;
     private ListView listView;
-    private Spinner spinner,grade,volt_grade;
+    private Spinner spinner,grade;
     private measureAdapter listAdapter;
     private List<ListMeasure> measureList = new ArrayList<>();
 
@@ -150,7 +151,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     public void onResume() {
         super.onResume();
 
-        Log.e("Awei","--- onResume----");
+        DataLog.e("--- onResume----");
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.INTENT_ACTION_GRANT_USB));
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.INTENT_ACTION_DISCONNECT));
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.INTENT_ACTION_CONNECT));
@@ -172,28 +173,26 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     private void measure()
     {
-        if(connected == Connected.True)
+        DataLog.e("measure:" + status_mode);
+        if (status_mode == 0)
         {
-            if (status_mode == 0)
-            {
-                receiveText.setText("");
-                BtnShots.setEnabled(false);
-                btnCal.setEnabled(false);
-                //send("EE");
-                sendStrByte("CD010304");
-                btnOn.setText("Measure");
-                status_mode = 1;
-            }
-            else if (status_mode == 1)
-            {
-                receiveText.setText("");
+            receiveText.setText("");
+            //BtnShots.setEnabled(false);
+            btnCal.setEnabled(false);
+            //send("EE");
+            sendStrByte(uartCmd.lase_on);
+            btnOn.setText("Measure");
+            status_mode = 1;
+        }
+        else if (status_mode == 1)
+        {
+            receiveText.setText("");
 
-                sendStrByte("CD010506");
-                //send("S");
-                btnOn.setEnabled(false);
-                btnCal.setEnabled(false);
-                status_mode = 2;
-            }
+            sendStrByte(uartCmd.get_single_distance);
+            //send("S");
+            btnOn.setEnabled(false);
+            btnCal.setEnabled(false);
+            status_mode = 2;
         }
     }
 
@@ -230,18 +229,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     };
 
-    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration, 5: get version
+    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration, 5: get version, 6: get phase data
     private int status_mode;
     private final int CNT_MAX = 5;
     private int cnt;
     private int grade_idx, dac_grade_idx;
-    private ArrayAdapter<CharSequence> adapter,grade_adapter,voltGrade_adapter;
+    private ArrayAdapter<CharSequence> adapter,grade_adapter;
     private int offset = 0;
- //   private int onStatus = 0; // on = 0, measure = 1
+    //   private int onStatus = 0; // on = 0, measure = 1
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.screen_test, container, false);
 
+        View view = inflater.inflate(R.layout.screen_test, container, false);
         receiveText = view.findViewById(R.id.receive_text);                          // TextView performance decreases with number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -250,6 +249,10 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         ed_sub = view.findViewById(R.id.ed_sub);
         ed_device = view.findViewById(R.id.ed_device);
         ed_real = view.findViewById(R.id.ed_real);
+
+        tvAppVer = view.findViewById(R.id.app_ver);
+        String AppVer = "App Ver:" + BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
+        tvAppVer.setText(AppVer);
 
         btnForce = view.findViewById(R.id.btnForce);
         btnForce.setOnClickListener(v -> {
@@ -278,29 +281,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         grade.setSelection(grade_idx, false);
         grade.setOnItemSelectedListener(gradeOnItemSelected);
 
-        volt_grade = view.findViewById(R.id.sp_grade_c);
-        voltGrade_adapter =  ArrayAdapter.createFromResource(context,
-                R.array.grade_class,
-                android.R.layout.simple_spinner_item);
-
-        voltGrade_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        volt_grade.setAdapter(voltGrade_adapter);
         dac_grade_idx = 0;
-        volt_grade.setSelection(dac_grade_idx, false);
-        volt_grade.setOnItemSelectedListener(dacGradeOnItemSelected);
 
         listAdapter = new measureAdapter(context,measureList);
         listView = view.findViewById(R.id.dis_list);
         listView.setAdapter(listAdapter);
 
-        ed_dac_volt = view.findViewById(R.id.ed_volt);
 
         btnOn = view.findViewById(R.id.btnLaserOn);
         btnOff = view.findViewById(R.id.btnLaserOff);
         btnCal = view.findViewById(R.id.btnCali);
         BtnShots = view.findViewById(R.id.btnShots);
         BtnGradeSet = view.findViewById(R.id.btnSetGrade);
-        BtnVoltSet = view.findViewById(R.id.btnSet);
         btnDisEn = view.findViewById(R.id.btnDisEn);
 
         btnCleanDis = view.findViewById(R.id.btnCleanDis);
@@ -316,7 +308,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             btnOn.setEnabled(false);
             btnCal.setEnabled(false);
             //send("O");
-            sendStrByte("CD010607");
+            sendStrByte(uartCmd.get_multi_distance);
         });
 
         BtnGradeSet.setOnClickListener(v->
@@ -324,59 +316,29 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             String str_tx = "";//"-setenv:";
             if(grade_idx == 0)
             {
-              //  str_tx+="laser_grade,2";
-                str_tx = "CD1106000219";
+                //  str_tx+="laser_grade,2";
+                str_tx = uartCmd.laser_grade_2;
             }
             else if(grade_idx == 1)
             {
                 //str_tx+="laser_grade,3";
-                str_tx = "CD110600031A";
+                str_tx = uartCmd.laser_grade_3;
             }
 
-            Log.e("Awei","Set:" + str_tx);
+            DataLog.e("Set:" + str_tx);
             //send(str_tx);
             sendStrByte(str_tx);
         });
 
-        BtnVoltSet.setOnClickListener(v->
-        {
-            try
-            {
-                String dacStr = ed_dac_volt.getText().toString();
-                int data = Integer.valueOf(dacStr);
-                if(!dacStr.equals("") && (data >= 0 && data <=4095 ))
-                {
-                    String txStr = "";//"-setenv:";
-                    if(dac_grade_idx == 0)
-                    {
-                        //txStr+= "laser_dac_grade2," + dacStr;
-                        txStr = "CD1101";
-                    }
-                    else if(dac_grade_idx == 1)
-                    {
-                        //txStr+= "laser_dac_grade3," + dacStr;
-                        txStr = "CD1102";
-                    }
-
-                    Log.e("Awei","Set:" + txStr);
-                    send(txStr);
-                }
-                else
-                    Toast.makeText(context,"錯誤設置參數",Toast.LENGTH_LONG).show();
-            }
-            catch (Exception e)
-            {
-                Toast.makeText(context,"錯誤設置參數",Toast.LENGTH_LONG).show();
-            }
-
-        });
 
 
         btnOff.setOnClickListener(v ->{
             status_mode = 0;
+            cnt = 0;
             clean_list();
             //send("D");
-            sendStrByte("CD010405");
+            sendStrByte(uartCmd.lase_off);
+            btnOn.setText("Laser On");
             BtnShots.setEnabled(true);
             btnOn.setEnabled(true);
             btnOff.setEnabled(true);
@@ -386,19 +348,19 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         btnDisEn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.e("Awei","Distance Cal Status:" + isChecked);
+                DataLog.e("Distance Cal Status:" + isChecked);
                 if (isChecked) {
-                    TestScreen.this.sendStrByte("CD0A242E");
+                    TestScreen.this.sendStrByte(uartCmd.enable_distance_function);
                 } else {
-                    TestScreen.this.sendStrByte("CD0A232D");
+                    TestScreen.this.sendStrByte(uartCmd.disable_distance_function);
                 }
             }
         });
 
         btnCal.setOnClickListener(v ->
         {
-           // send("C");
-            sendStrByte("CD0A000A");
+            // send("C");
+            sendStrByte(uartCmd.zero_cal);
             status_mode = 4;
             btnOn.setEnabled(false);
             btnCal.setEnabled(false);
@@ -468,7 +430,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             DataLog.debug(dis + "\n");
             DataLog.debug("---------------------------------"+ "\n");
 
-            String time = "Measure time;";
+            String time = "Measure temp;";
             for(int i = 0; i < measureList.size(); i++)
                 time+= measureList.get(i).getTimes().toString() + ";";
             DataLog.debug(time + "\n");
@@ -583,7 +545,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             driver = CustomProber.getCustomProber().probeDevice(device);
         }
         if(driver == null) {
-           // status("connection failed: no driver for device");
+            // status("connection failed: no driver for device");
             status(" No driver for device");
             return;
         }
@@ -623,8 +585,10 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
             // usb connect is not asynchronous. connect-success and connect-error are returned immediately from socket.connect
             // for consistency to bluetooth/bluetooth-LE app use same SerialListener and SerialService classes
             onSerialConnect();
+            DataLog.e("go to onSerialConnect");
         } catch (Exception e) {
             onSerialConnectError(e);
+            DataLog.e("onSerialConnect Err");
         }
     }
 
@@ -633,11 +597,12 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         service.disconnect();
         usbSerialPort = null;
         initialStart = true;
-        Log.e("Awei","----- service.disconnect -----");
+        DataLog.e("----- service.disconnect -----");
     }
 
     private void sendStrByte(String str)
     {
+        DataLog.e("Send:" + str);
         if(connected != TestScreen.Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             tv_status.setText("Disconnected");
@@ -654,19 +619,18 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
             n_byte[n_byte.length-2] = 0x0d;
             n_byte[n_byte.length-1] = 0x0a;
-            Log.e("Awei","Send:");
+            DataLog.e("Send:");
             for(int i = 0; i < n_byte.length; i++)
             {
-                Log.e("Awei","" +  String.format("%X", n_byte[i]));
+                DataLog.e("" +  String.format("%X", n_byte[i]));
 
             }
 
-            Log.e("Awei","\n");*/
+            DataLog.e("\n");*/
             service.write(data);
-            Log.e("Awei","Send byte---->");
         } catch (Exception e) {
             onSerialIoError(e);
-            Log.e("Awei","onSerialIoError");
+            DataLog.e("onSerialIoError");
         }
     }
 
@@ -681,10 +645,10 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
         try {
             service.write(data);
-            Log.e("Awei","Send byte---->");
+            DataLog.e("Send byte---->");
         } catch (Exception e) {
             onSerialIoError(e);
-            Log.e("Awei","onSerialIoError");
+            DataLog.e("onSerialIoError");
         }
     }
 
@@ -739,88 +703,111 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
 
         String debug = TextUtil.toHexString(data) ;
-        Log.e("Awei","debug:" + debug);
+        DataLog.e("debug:" + debug);
         receiveText.append(TextUtil.toCaretString(debug, newline.length() != 0));
 
-        Log.e("Awei","status:" + status_mode);
-        if(isGetTime)
+        DataLog.e("status:" + status_mode);
+        if(status_mode == 6 || status_mode == 7)
         {
+            // get pahse data
             String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
             if(header.equals("FA"))
             {
-                try {
-                    long time = (((data[6] << 8) << 8) << 8) & 0xFF000000;
-                    time += ((data[5] << 8) << 8) & 0xFF0000;
-                    time += (data[4] << 8) & 0xFF00;
-                    time += data[3] & 0xFF;
-                    Log.e("Awei", "time:" + time);
+                int len = data[1] << 8 | data[2] ;
+                DataLog.e("len:" + len);
 
-                    String t_org = Long.toString(time);
-                    double ms = Double.valueOf(t_org)/1000;
-
-                    String ttt = "--> t:" + String.format("%.3f",Double.valueOf(ms))+ "\n";
-                    receiveText.append(ttt);
-
-                    Log.e("Awei","id:" + tmp_list.getId());
-                    Log.e("Awei","dis:" + tmp_list.getDis());
-
-                    ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),String.format("%.3f",Double.valueOf(ms)));
-                    measureList.add(list);
-                    listAdapter.notifyDataSetChanged();
-                }
-                catch (Exception e)
+                if(len == 5)
                 {
-                    e.printStackTrace();
-                    Log.e("Awei","exception:" + e.toString());
-
-                    ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
-                    measureList.add(list);
-                    listAdapter.notifyDataSetChanged();
-                }
-
-                clean_list();
-
-                if(status_mode == 3)
-                {
-                    cnt++;
-
-                    if(cnt < CNT_MAX)
+                    try
                     {
-                        //send("O");
-                        sendStrByte("CD010607");
+                        long temp =(data[4] << 8) & 0xFF00;
+                        temp += data[3] & 0xFF;
+                        DataLog.e( "temp:" + temp);
+
+                        String t_org = Long.toString(temp);
+                        double tempture = Double.valueOf(t_org);
+
+                        String ttt = "--> t:" + Double.valueOf(tempture)+ "\n";
+                        receiveText.append(ttt);
+
+                        DataLog.e("id:" + tmp_list.getId());
+                        DataLog.e("dis:" + tmp_list.getDis());
+
+                        ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),String.format("%1.0f",Double.valueOf(tempture)));
+                        measureList.add(list);
+                        listAdapter.notifyDataSetChanged();
                     }
-                    else
+                    catch (Exception e)
                     {
-                        //send("D");
-                        sendStrByte("CD010405");
-                        cnt = 0;
+                        e.printStackTrace();
+                        DataLog.e("exception:" + e.toString());
+
+                        ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
+                        measureList.add(list);
+                        listAdapter.notifyDataSetChanged();
+
+                        btnOn.setEnabled(true);
+                        btnOff.setEnabled(true);
+                        btnCal.setEnabled(true);
+                        BtnShots.setEnabled(true);
+                        btnOn.setText("Laser On");
                         status_mode = 0;
                     }
                 }
-
-                if(status_mode == 0 || status_mode == 2)
+            }
+            else if(header.equals("0E"))
+            {
+                String err_code = Character.toString(debug.charAt(1));
+                if(err_code.equals("82"))
                 {
+                    status_mode = 5;
+                    sendStrByte(uartCmd.enter_debug_mode);
+                }
+
+                ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
+                measureList.add(list);
+                listAdapter.notifyDataSetChanged();
+            }
+
+            if(status_mode == 6)
+            {
+                btnOn.setEnabled(true);
+                btnOff.setEnabled(true);
+                btnCal.setEnabled(true);
+                BtnShots.setEnabled(true);
+                btnOn.setText("Laser On");
+                status_mode = 0;
+            }
+            else
+            {
+                 cnt++;
+                if(cnt < CNT_MAX)
+                {
+                    status_mode = 3;
+                    sendStrByte(uartCmd.get_multi_distance);
+                }
+                else
+                {
+                    sendStrByte(uartCmd.get_single_distance);
+                    cnt = 0;
+                    status_mode = 0;
+
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
                     BtnShots.setEnabled(true);
                     btnOn.setText("Laser On");
-                    status_mode = 0;
                 }
-            }
-            else
-            {
-                Log.e("Awei","get timer error");
             }
         }
         else if(status_mode == 2 || status_mode == 3 )
         {
-            Log.e("Awei","Data: ------"+ data[0]);
+            DataLog.e("Data: ------"+ data[0]);
             String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
             if(header.equals("FA"))
             {
                 int len = data[1] << 8 | data[2] ;
-                Log.e("Awei","len:" + len);
+                DataLog.e("len:" + len);
 
                 try
                 {
@@ -828,7 +815,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     dis_mm +=((data[5] << 8)<<8) & 0xFF0000;
                     dis_mm += (data[4] << 8)& 0xFF00;
                     dis_mm += data[3] & 0xFF;
-                    Log.e("Awei","dis_mm:" + dis_mm);
+                    DataLog.e("dis_mm:" + dis_mm);
 
                     String d_org = Long.toString(dis_mm);
                     double off =  (double)offset/10;
@@ -909,32 +896,17 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     tmp_list.setId(String.valueOf(measureList.size()));
                     tmp_list.setDis(str_dis);
 
-                    isGetTime = true;
-                    // Get time
-                    sendStrByte("CD1110010628");
+                    if(status_mode == 3)
+                        status_mode = 7;
+                    else
+                        status_mode = 6;
+
+                    sendStrByte(uartCmd.get_tempture);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    Log.e("Awei","exception:" + e.toString());
-
-                    if(status_mode == 3)
-                    {
-                        //cnt++;
-
-                        if(cnt < CNT_MAX)
-                        {
-                            //send("O");
-                            sendStrByte("CD010607");
-                        }
-                        else
-                        {
-                            //send("D");
-                            sendStrByte("CD010405");
-                            cnt = 0;
-                            status_mode = 0;
-                        }
-                    }
+                    DataLog.e("exception:" + e.toString());
                 }
             }
             else
@@ -944,27 +916,27 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                     int err = data[1] & 0xFF;
                     switch (err)
                     {
-                       case 131: // 0x83
-                           addToList("distance out of range");
-                           break;
-                       case 132: // 0x84
-                           addToList("cmd not found");
-                           break;
-                       case 133: // 0x85
-                           addToList("laser not enable");
-                           break;
-                       case 134: // 0x86
-                           addToList("device params not found");
-                           break;
-                       case 135: // 0x87
-                           addToList("wait for cmd repeat");
-                           break;
-                       case 136: // 0x88
-                           addToList("ID exist");
-                           break;
-                       case 137: // 0x89
-                           addToList("Low SNR");
-                           break;
+                        case 131: // 0x83
+                            addToList("distance out of range");
+                            break;
+                        case 132: // 0x84
+                            addToList("cmd not found");
+                            break;
+                        case 133: // 0x85
+                            addToList("laser not enable");
+                            break;
+                        case 134: // 0x86
+                            addToList("device params not found");
+                            break;
+                        case 135: // 0x87
+                            addToList("wait for cmd repeat");
+                            break;
+                        case 136: // 0x88
+                            addToList("ID exist");
+                            break;
+                        case 137: // 0x89
+                            addToList("Low SNR");
+                            break;
                     }
 
                     if(status_mode == 0 || status_mode == 2)
@@ -976,6 +948,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                         btnOn.setText("Laser On");
                         status_mode = 0;
                     }
+
                     if(status_mode == 3)
                     {
                         cnt++;
@@ -983,14 +956,20 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
                         if(cnt < CNT_MAX)
                         {
                             //send("O");
-                            sendStrByte("CD010607");
+                            sendStrByte(uartCmd.get_multi_distance);
                         }
                         else
                         {
                             //send("D");
-                            sendStrByte("CD010405");
+                            sendStrByte(uartCmd.get_single_distance);
                             cnt = 0;
                             status_mode = 0;
+
+                            btnOn.setEnabled(true);
+                            btnOff.setEnabled(true);
+                            btnCal.setEnabled(true);
+                            BtnShots.setEnabled(true);
+                            btnOn.setText("Laser On");
                         }
                     }
 
@@ -1000,19 +979,30 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         else if(status_mode == 6)
         {
             //sendByte(DEBUG_MODE);
-            sendStrByte("CD010203");
+            sendStrByte(uartCmd.get_version);
             status_mode = 5;
         }
         else if(status_mode == 5)
         {
-            if(data[2] == 0x06)
+            DataLog.e("mode = 5, len:" + String.valueOf(data[2]));
+            if(data[2] == 0x07)
             {
-                String str_ver = String.valueOf(data[3]) + "." + String.valueOf(data[4])
-                        + "-20" + String.valueOf(data[5])
-                        + "/" +String.valueOf(data[6])
-                        + "/"  +String.valueOf(data[7]);
+                byte[] tmp = {data[5]};
+                String str_ver = String.valueOf(data[3]) + "." + String.valueOf(data[4]) +  ConversionUtils.bytesToString(tmp)
+                        + "-20" + String.valueOf(data[6])
+                        + "/" + String.valueOf(data[7])
+                        + "/" + String.valueOf(data[8]);
+
+                tv_status.setText("Connected");
                 tv_ver.setText(str_ver);
                 status_mode = 0;
+                tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
+            }
+            else if(data[2] == 0x01)
+            {
+                //status_mode = 0;
+               // sendStrByte(uartCmd.get_version);
+                DataLog.e("Enter debug mode");
             }
         }
         else if(status_mode == 0 || status_mode == 2)
@@ -1040,8 +1030,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     void detected (String str)
     {
-        tv_status.setText(str);
-        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
+ //       tv_status.setText(str);
+ //       tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
+        DataLog.e("detected -- string");
+        sendStrByte(uartCmd.enter_debug_mode);
+        status_mode = 5;
     }
 
     void lost (String str)
@@ -1052,7 +1045,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     void status(String str) {
         tv_status.setText(str);
-        Log.e("Awei","" + str);
+        DataLog.e("" + str);
     }
 
     @Override
@@ -1072,17 +1065,30 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         tv_status.setBackgroundColor(getResources().getColor(R.color.RedColor));
     }
 
-//    private byte[] DEBUG_MODE = {(byte)0xCD,(byte)0x05,(byte)0x3C,(byte)0xA0,(byte)0xE1,(byte)0x0D,(byte)0x0A};
+    //    private byte[] DEBUG_MODE = {(byte)0xCD,(byte)0x05,(byte)0x3C,(byte)0xA0,(byte)0xE1,(byte)0x0D,(byte)0x0A};
     @Override
     public void onSerialConnect() {
-        status("Connected");
+ //       status("Connected");
+
+        DataLog.e("onSerialConnect ---");
 
         connected = TestScreen.Connected.True;
-        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
+//        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
 
-        sendStrByte("CD050106");
-        status_mode = 6;
+        //sendStrByte(uartCmd.get_version);
+        sendStrByte(uartCmd.enter_debug_mode);
+        status_mode = 5;
+        timerHandler.postDelayed(timerRunnable, 100);
     }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            DataLog.e("get version");
+            sendStrByte(uartCmd.get_version);
+        }
+    };
 
     @Override
     public void onSerialConnectError(Exception e) {

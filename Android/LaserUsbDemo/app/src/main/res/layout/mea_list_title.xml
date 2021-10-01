@@ -33,7 +33,7 @@
         android:layout_weight="1"
         android:textColor="@color/black"
         android:gravity="center"
-        android:text="Times(ms)"/>
+        android:text="Temp"/>
     <View
         style="@style/list_item_cell_seperator_layout" />
 </LinearLayout >

@@ -20,6 +20,7 @@ public class ConversionUtils {
         return null;
     }
 
+
     public static byte[] stringToBytes(String data) {
         return data.getBytes(Charset.forName(UTF_8));
     }
