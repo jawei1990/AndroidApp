@@ -86,3 +86,4 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+Android/LaserUsbDemo/.idea/compiler.xml
