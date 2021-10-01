@@ -18,4 +18,7 @@ public interface uartCmd {
 
     final String laser_grade_2 = "CD1106000219";
     final String laser_grade_3 = "CD110600031A";
+
+    final String enable_phase_correction = "CD1107000119";
+    final String disable_phase_correction = "CD1107000018";
 }
