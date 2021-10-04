@@ -26,9 +26,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ScreenScale.initial(this);
         context = this;
         activity  = this;
         path = getFilePath();
+
         Log.e("Awei","path:" + path);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)

@@ -14,6 +14,7 @@
         android:background="@color/gray"
         android:textColor="@color/black"
         android:textSize="12dp" />
+
     <LinearLayout
         android:id="@+id/top_title"
         android:layout_width="wrap_content"
@@ -26,15 +27,16 @@
             android:layout_width="wrap_content"
             android:layout_height="50px"
             android:textColor="@color/black"
-            android:textSize="12dp"/>
+            android:textSize="12dp" />
+
         <TextView
             android:id="@+id/tv_dev"
             android:layout_width="wrap_content"
             android:layout_height="50px"
-            android:textColor="@color/black"
-            android:textSize="12dp"
             android:background="@color/RedColor"
-            android:text="Disconnected"/>
+            android:text="Disconnected"
+            android:textColor="@color/black"
+            android:textSize="12dp" />
     </LinearLayout>
 
 
@@ -45,9 +47,8 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <TextView
@@ -72,9 +73,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <TextView
@@ -99,9 +99,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <TextView
@@ -126,27 +125,26 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="800px"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="1080px"
+                android:layout_height="150px"
                 android:layout_marginLeft="20px"
                 android:text="Measure D:"
                 android:textColor="@color/black"
                 android:textSize="25dp" />
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="1080px"
+                android:layout_height="650px"
                 android:background="@color/black">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="1080px"
+                    android:layout_height="650px"
                     android:layout_marginStart="10px"
                     android:layout_marginTop="10px"
                     android:layout_marginEnd="10px"
@@ -175,9 +173,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <Button
@@ -229,9 +226,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <Button
@@ -256,7 +252,7 @@
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="400px"
-                android:layout_height="250px"
+                android:layout_height="150px"
                 android:layout_weight="2"
                 android:textColor="@color/black"
                 android:textSize="10dp" />
@@ -270,9 +266,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="150px"
             android:orientation="horizontal">
 
             <TextView
@@ -312,17 +307,16 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="1080px"
+            android:layout_height="50px"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/app_ver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_alignParentRight="true"
+                android:layout_weight="1"
                 android:textColor="@color/black" />
         </RelativeLayout>
 

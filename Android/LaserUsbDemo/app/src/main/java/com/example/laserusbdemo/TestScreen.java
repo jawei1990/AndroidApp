@@ -239,6 +239,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.screen_test, container, false);
+        ScreenScale.changeAllViewSize(view);
         receiveText = view.findViewById(R.id.receive_text);                          // TextView performance decreases with number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
