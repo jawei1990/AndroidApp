@@ -5,333 +5,352 @@
     android:layout_height="match_parent"
     android:background="@color/gray">
 
-    <TextView
-        android:id="@+id/receive_text"
-        android:layout_width="match_parent"
-        android:layout_height="150px"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/gray"
-        android:textColor="@color/black"
-        android:textSize="12dp" />
-
-    <LinearLayout
-        android:id="@+id/top_title"
-        android:layout_width="wrap_content"
-        android:layout_height="50px"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true">
-
-        <TextView
-            android:id="@+id/tv_ver"
-            android:layout_width="wrap_content"
-            android:layout_height="50px"
-            android:textColor="@color/black"
-            android:textSize="12dp" />
-
-        <TextView
-            android:id="@+id/tv_dev"
-            android:layout_width="wrap_content"
-            android:layout_height="50px"
-            android:background="@color/RedColor"
-            android:text="Disconnected"
-            android:textColor="@color/black"
-            android:textSize="12dp" />
-    </LinearLayout>
-
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/top_title"
-        android:orientation="vertical">
+        android:scrollbars="vertical">
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="150px"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20px"
-                android:text="Subject:"
-                android:textColor="@color/black"
-                android:textSize="25dp" />
-
-            <EditText
-                android:id="@+id/ed_sub"
-                android:layout_width="600px"
-                android:layout_height="150px"
-                android:layout_marginLeft="20px"
-                android:background="@color/gray"
-                android:hint="Enter Subject"
-                android:textColor="@color/black"
-                android:textColorHint="@color/blue" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="150px"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20px"
-                android:text="Module No:"
-                android:textColor="@color/black"
-                android:textSize="25dp" />
-
-            <EditText
-                android:id="@+id/ed_device"
-                android:layout_width="700px"
-                android:layout_height="150px"
-                android:layout_marginLeft="20px"
-                android:background="@color/gray"
-                android:hint="Enter Module Number"
-                android:textColor="@color/black"
-                android:textColorHint="@color/blue" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="150px"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20px"
-                android:text="Real D:"
-                android:textColor="@color/black"
-                android:textSize="25dp" />
-
-            <EditText
-                android:id="@+id/ed_real"
-                android:layout_width="700px"
-                android:layout_height="150px"
-                android:layout_marginLeft="20px"
-                android:background="@color/gray"
-                android:hint="Enter real distance."
-                android:textColor="@color/black"
-                android:textColorHint="@color/blue" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="800px"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="150px"
-                android:layout_marginLeft="20px"
-                android:text="Measure D:"
-                android:textColor="@color/black"
-                android:textSize="25dp" />
+            android:layout_height="match_parent">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="650px"
-                android:background="@color/black">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/receive_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="150px"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/gray"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <LinearLayout
+                    android:id="@+id/top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50px"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true">
+
+                    <TextView
+                        android:id="@+id/tv_ver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50px"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/tv_dev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50px"
+                        android:background="@color/RedColor"
+                        android:text="Disconnected"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="650px"
-                    android:layout_marginStart="10px"
-                    android:layout_marginTop="10px"
-                    android:layout_marginEnd="10px"
-                    android:layout_marginBottom="10px"
-                    android:background="@color/gray"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/top_title"
                     android:orientation="vertical">
 
-                    <View style="@style/list_item_seperator_layout" />
-
-                    <include layout="@layout/mea_list_title" />
-
-                    <View style="@style/list_item_seperator_layout" />
-
-                    <ListView
-                        android:id="@+id/dis_list"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="650px"
-                        android:background="@color/gray"
-                        android:divider="@color/black"
-                        android:dividerHeight="1.0dp"
-                        android:scrollbars="vertical" />
+                        android:layout_height="150px"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="20px"
+                            android:text="Subject:"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <EditText
+                            android:id="@+id/ed_sub"
+                            android:layout_width="600px"
+                            android:layout_height="150px"
+                            android:layout_marginLeft="20px"
+                            android:background="@color/gray"
+                            android:hint="Enter Subject"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/blue" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="150px"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="20px"
+                            android:text="Module No:"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <EditText
+                            android:id="@+id/ed_device"
+                            android:layout_width="700px"
+                            android:layout_height="150px"
+                            android:layout_marginLeft="20px"
+                            android:background="@color/gray"
+                            android:hint="Enter Module Number"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/blue" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="150px"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="20px"
+                            android:text="Real D:"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <EditText
+                            android:id="@+id/ed_real"
+                            android:layout_width="700px"
+                            android:layout_height="150px"
+                            android:layout_marginLeft="20px"
+                            android:background="@color/gray"
+                            android:hint="Enter real distance."
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/blue" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="800px"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="150px"
+                            android:layout_marginLeft="20px"
+                            android:text="Measure D:"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="650px"
+                            android:background="@color/black">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="650px"
+                                android:layout_marginStart="10px"
+                                android:layout_marginTop="10px"
+                                android:layout_marginEnd="10px"
+                                android:layout_marginBottom="10px"
+                                android:background="@color/gray"
+                                android:orientation="vertical">
+
+                                <View style="@style/list_item_seperator_layout" />
+
+                                <include layout="@layout/mea_list_title" />
+
+                                <View style="@style/list_item_seperator_layout" />
+
+                                <ListView
+                                    android:id="@+id/dis_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="650px"
+                                    android:background="@color/gray"
+                                    android:divider="@color/black"
+                                    android:dividerHeight="1.0dp"
+                                    android:scrollbars="vertical" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="700px"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btnLaserOn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Laser On"
+                                android:textSize="14dp" />
+
+                            <Button
+                                android:id="@+id/btnLaserOff"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Laser Off"
+                                android:textSize="14dp" />
+
+                            <Button
+                                android:id="@+id/btnShots"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Shots"
+                                android:textSize="14dp" />
+
+                            <Button
+                                android:id="@+id/btnCali"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Cali./ Offset"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btnDisEn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:textOff="D_CAL OFF"
+                                android:textOn="D_CAL ON"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btnCleanDis"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="5px"
+                                android:layout_weight="1"
+                                android:text="Clean Screen"
+                                android:textSize="14dp" />
+
+                            <Button
+                                android:id="@+id/btnLogOutPut"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Log Output"
+                                android:textSize="14dp" />
+
+                            <Spinner
+                                android:id="@+id/spinner"
+                                android:layout_width="400px"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/black"
+                                android:textSize="10dp" />
+
+                            <Button
+                                android:id="@+id/btnForce"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="回連" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="50px"
+                                android:layout_weight="1"
+                                android:text="grade:" />
+
+                            <Spinner
+                                android:id="@+id/sp_grade"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="10px"
+                                android:layout_weight="2"
+                                android:textColor="@color/black"
+                                android:textSize="10dp" />
+
+                            <Button
+                                android:id="@+id/btnSetGrade"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:text="Set" />
+
+                            <ToggleButton
+                                android:id="@+id/btnPhase"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:checked="true"
+                                android:textOff="Phase off"
+                                android:textOn="Phase on"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/app_ver"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_weight="1"
+                                android:textColor="@color/black" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
                 </LinearLayout>
-
             </RelativeLayout>
 
-        </LinearLayout>
+        </HorizontalScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="700px"
-            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnLaserOn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Laser On"
-                    android:textSize="14dp" />
-
-                <Button
-                    android:id="@+id/btnLaserOff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Laser Off"
-                    android:textSize="14dp" />
-
-                <Button
-                    android:id="@+id/btnShots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Shots"
-                    android:textSize="14dp" />
-
-                <Button
-                    android:id="@+id/btnCali"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Cali./ Offset"
-                    android:textSize="14dp" />
-
-                <ToggleButton
-                    android:id="@+id/btnDisEn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:textOff="D_CAL OFF"
-                    android:textOn="D_CAL ON"
-                    android:textSize="14dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnCleanDis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="5px"
-                    android:layout_weight="1"
-                    android:text="Clean Screen"
-                    android:textSize="14dp" />
-
-                <Button
-                    android:id="@+id/btnLogOutPut"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Log Output"
-                    android:textSize="14dp" />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="400px"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="10dp" />
-
-                <Button
-                    android:id="@+id/btnForce"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="回連" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="50px"
-                    android:layout_weight="1"
-                    android:text="grade:" />
-
-                <Spinner
-                    android:id="@+id/sp_grade"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10px"
-                    android:layout_weight="2"
-                    android:textColor="@color/black"
-                    android:textSize="10dp" />
-
-                <Button
-                    android:id="@+id/btnSetGrade"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Set" />
-
-                <ToggleButton
-                    android:id="@+id/btnPhase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checked="true"
-                    android:textOff="Phase off"
-                    android:textOn="Phase on"
-                    android:textSize="14dp" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/app_ver"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="1"
-                    android:textColor="@color/black" />
-            </RelativeLayout>
-        </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
