@@ -85,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         check();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mCurFragment.onPause();
+    }
+
+
     public boolean hasPermission(String permission) {
         if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{permission}, 1);

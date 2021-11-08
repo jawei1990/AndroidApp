@@ -160,6 +160,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     public void onPause() {
         getActivity().unregisterReceiver(broadcastReceiver);
         super.onPause();
+        sendStrByte(uartCmd.lase_off);
     }
 
     void FragmentOnKeyDown(int key_code){
@@ -227,7 +228,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         }
     };
 
-    // 0: init, 1: laser on, 2: measure, 3: shots, 4: calibration, 5: get version, 6: get phase data
+
     private int status_mode;
     private final int CNT_MAX = 5;
     private int cnt;
@@ -303,7 +304,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         });
 
         BtnShots.setOnClickListener(v -> {
-            status_mode = 3;
+            status_mode = Utils.STATUS_SHOTS;;
             BtnShots.setEnabled(false);
             btnOn.setEnabled(false);
             btnCal.setEnabled(false);
@@ -333,7 +334,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
 
         btnOff.setOnClickListener(v ->{
-            status_mode = 0;
+            status_mode = Utils.STATUS_INIT;
             cnt = 0;
             clean_list();
             //send("D");
@@ -373,7 +374,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         {
             // send("C");
             sendStrByte(uartCmd.zero_cal);
-            status_mode = 4;
+            status_mode = Utils.STATUS_CALIB;
             btnOn.setEnabled(false);
             btnCal.setEnabled(false);
             BtnShots.setEnabled(false);
@@ -719,334 +720,347 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
         receiveText.append(TextUtil.toCaretString(debug, newline.length() != 0));
 
         DataLog.e("status:" + status_mode);
-        if(status_mode == 6 || status_mode == 7)
+        switch(status_mode)
         {
-            // get pahse data
-            String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
-            if(header.equals("FA"))
+            case Utils.STATUS_INIT:
             {
-                int len = data[1] << 8 | data[2] ;
-                DataLog.e("len:" + len);
-
-                if(len == 5)
+                if(debug.contains("FA 00 01 01"))
                 {
-                    try
-                    {
-                        long temp =(data[4] << 8) & 0xFF00;
-                        temp += data[3] & 0xFF;
-                        DataLog.e( "temp:" + temp);
-
-                        String t_org = Long.toString(temp);
-                        double tempture = Double.valueOf(t_org);
-
-                        String ttt = "--> t:" + Double.valueOf(tempture)+ "\n";
-                        receiveText.append(ttt);
-
-                        DataLog.e("id:" + tmp_list.getId());
-                        DataLog.e("dis:" + tmp_list.getDis());
-
-                        ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),String.format("%1.0f",Double.valueOf(tempture)));
-                        measureList.add(list);
-                        listAdapter.notifyDataSetChanged();
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        DataLog.e("exception:" + e.toString());
-
-                        ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
-                        measureList.add(list);
-                        listAdapter.notifyDataSetChanged();
-
-                        btnOn.setEnabled(true);
-                        btnOff.setEnabled(true);
-                        btnCal.setEnabled(true);
-                        BtnShots.setEnabled(true);
-                        btnOn.setText("Laser On");
-                        status_mode = 0;
-                    }
-                }
-            }
-            else if(header.equals("0E"))
-            {
-                String err_code = Character.toString(debug.charAt(1));
-                if(err_code.equals("82"))
-                {
-                    status_mode = 5;
-                    sendStrByte(uartCmd.enter_debug_mode);
-                }
-
-                ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
-                measureList.add(list);
-                listAdapter.notifyDataSetChanged();
-            }
-
-            if(status_mode == 6)
-            {
-                btnOn.setEnabled(true);
-                btnOff.setEnabled(true);
-                btnCal.setEnabled(true);
-                BtnShots.setEnabled(true);
-                btnOn.setText("Laser On");
-                status_mode = 0;
-            }
-            else
-            {
-                 cnt++;
-                if(cnt < CNT_MAX)
-                {
-                    status_mode = 3;
-                    sendStrByte(uartCmd.get_multi_distance);
-                }
-                else
-                {
-                    sendStrByte(uartCmd.get_single_distance);
-                    cnt = 0;
-                    status_mode = 0;
-
                     btnOn.setEnabled(true);
                     btnOff.setEnabled(true);
                     btnCal.setEnabled(true);
                     BtnShots.setEnabled(true);
                     btnOn.setText("Laser On");
+                    status_mode = 0;
                 }
             }
-        }
-        else if(status_mode == 2 || status_mode == 3 )
-        {
-            DataLog.e("Data: ------"+ data[0]);
-            String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
-            if(header.equals("FA"))
+            break;
+            case Utils.STATUS_MEASURE:
+            case Utils.STATUS_SHOTS:
             {
-                int len = data[1] << 8 | data[2] ;
-                DataLog.e("len:" + len);
-
-                try
+                DataLog.e("Data: ------"+ data[0]);
+                String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
+                if(header.equals("FA"))
                 {
-                    long dis_mm = (((data[6] << 8)<<8)<<8) & 0xFF000000;
-                    dis_mm +=((data[5] << 8)<<8) & 0xFF0000;
-                    dis_mm += (data[4] << 8)& 0xFF00;
-                    dis_mm += data[3] & 0xFF;
-                    DataLog.e("dis_mm:" + dis_mm);
+                    int len = data[1] << 8 | data[2] ;
+                    DataLog.e("len:" + len);
 
-                    String d_org = Long.toString(dis_mm);
-                    double off =  (double)offset/10;
-                    double d = Double.valueOf(d_org)/10  + off;
-                    double tmp = 0;
-                    double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
-                    double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
-
-                    String ttt = "--> d:" + String.format("%.1f",Double.valueOf(d))+ "\n";
-                    receiveText.append(ttt);
-                    if(spinner.getSelectedItemPosition() == 1)
+                    try
                     {
-                        a1 = 1.875E-08  ;
-                        b1 = -0.00000861;
-                        c1 = 0.001379   ;
-                        d1 = -0.08822   ;
-                        e1 = -0.04327   ;
-                        a2 = 0          ;
-                        b2 = -9.801E-10 ;
-                        c2 = 0.000001012;
-                        d2 = 0.004274   ;
-                        e2 = -2.13      ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 2)
-                    {
-                        a1 = 4.217E-08  ;
-                        b1 = -0.00001878;
-                        c1 = 0.002805   ;
-                        d1 = -0.1557    ;
-                        e1 = 0.436      ;
-                        a2 = -3.89E-12  ;
-                        b2 = 1.879E-08  ;
-                        c2 = -0.00003245;
-                        d2 = 0.02291    ;
-                        e2 = -4.816     ;
-                    }
-                    else if(spinner.getSelectedItemPosition() == 3)
-                    {
-                        a1 = 3.369E-09   ;
-                        b1 = -0.000001915;
-                        c1 = 0.000412    ;
-                        d1 = -0.03668    ;
-                        e1 = 0.01279     ;
-                        a2 = -2.425E-12  ;
-                        b2 = 1.039E-08   ;
-                        c2 = -0.00001674 ;
-                        d2 = 0.0127      ;
-                        e2 = -2.653      ;
-                    }
+                        long dis_mm = (((data[6] << 8)<<8)<<8) & 0xFF000000;
+                        dis_mm +=((data[5] << 8)<<8) & 0xFF0000;
+                        dis_mm += (data[4] << 8)& 0xFF00;
+                        dis_mm += data[3] & 0xFF;
+                        DataLog.e("dis_mm:" + dis_mm);
 
-                    if(d <= 200)
-                    {
-                        tmp = (a1 * Math.pow(d,4)) + (b1 * Math.pow(d,3)) + (c1 * Math.pow(d,2)) +
-                                (d1 * d) + e1;
-                    }
-                    else
-                    {
-                        tmp = (a2 * Math.pow(d,4)) + (b2 * Math.pow(d,3)) + (c2 * Math.pow(d,2)) +
-                                (d2 * d) + e2;
-                    }
+                        String d_org = Long.toString(dis_mm);
+                        double off =  (double)offset/10;
+                        double d = Double.valueOf(d_org)/10  + off;
+                        double tmp = 0;
+                        double a1= 0,b1= 0,c1= 0,d1= 0,e1= 0;
+                        double a2= 0,b2= 0,c2= 0,d2= 0,e2= 0;
 
-                    // d += offset;
+                        String ttt = "--> d:" + String.format("%.1f",Double.valueOf(d))+ "\n";
+                        receiveText.append(ttt);
+                        if(spinner.getSelectedItemPosition() == 1)
+                        {
+                            a1 = 1.875E-08  ;
+                            b1 = -0.00000861;
+                            c1 = 0.001379   ;
+                            d1 = -0.08822   ;
+                            e1 = -0.04327   ;
+                            a2 = 0          ;
+                            b2 = -9.801E-10 ;
+                            c2 = 0.000001012;
+                            d2 = 0.004274   ;
+                            e2 = -2.13      ;
+                        }
+                        else if(spinner.getSelectedItemPosition() == 2)
+                        {
+                            a1 = 4.217E-08  ;
+                            b1 = -0.00001878;
+                            c1 = 0.002805   ;
+                            d1 = -0.1557    ;
+                            e1 = 0.436      ;
+                            a2 = -3.89E-12  ;
+                            b2 = 1.879E-08  ;
+                            c2 = -0.00003245;
+                            d2 = 0.02291    ;
+                            e2 = -4.816     ;
+                        }
+                        else if(spinner.getSelectedItemPosition() == 3)
+                        {
+                            a1 = 3.369E-09   ;
+                            b1 = -0.000001915;
+                            c1 = 0.000412    ;
+                            d1 = -0.03668    ;
+                            e1 = 0.01279     ;
+                            a2 = -2.425E-12  ;
+                            b2 = 1.039E-08   ;
+                            c2 = -0.00001674 ;
+                            d2 = 0.0127      ;
+                            e2 = -2.653      ;
+                        }
 
-                    double dis = d - tmp ;
+                        if(d <= 200)
+                        {
+                            tmp = (a1 * Math.pow(d,4)) + (b1 * Math.pow(d,3)) + (c1 * Math.pow(d,2)) +
+                                    (d1 * d) + e1;
+                        }
+                        else
+                        {
+                            tmp = (a2 * Math.pow(d,4)) + (b2 * Math.pow(d,3)) + (c2 * Math.pow(d,2)) +
+                                    (d2 * d) + e2;
+                        }
 
-                    ttt = "temp:" + Double.toString(tmp) + "\n";
-                    receiveText.append(ttt);
+                        // d += offset;
 
-                    ttt = "offset:" + Double.toString(off) + "\n";
-                    receiveText.append(ttt);
+                        double dis = d - tmp ;
 
-                    String str_dis = String.format("%.1f",Double.valueOf(dis)) ;//String.valueOf(dis);
+                        ttt = "temp:" + Double.toString(tmp) + "\n";
+                        receiveText.append(ttt);
+
+                        ttt = "offset:" + Double.toString(off) + "\n";
+                        receiveText.append(ttt);
+
+                        String str_dis = String.format("%.1f",Double.valueOf(dis)) ;//String.valueOf(dis);
                /*
                     ListMeasure list  = new ListMeasure(String.valueOf(measureList.size()),str_dis,str_time);
                     measureList.add(list);
                     listAdapter.notifyDataSetChanged();
                 */
-                    tmp_list.setId(String.valueOf(measureList.size()));
-                    tmp_list.setDis(str_dis);
+                        tmp_list.setId(String.valueOf(measureList.size()));
+                        tmp_list.setDis(str_dis);
 
-                    if(status_mode == 3)
-                        status_mode = 7;
-                    else
-                        status_mode = 6;
+                        if(status_mode == Utils.STATUS_SHOTS)
+                            status_mode = Utils.STATUS_TEMP_DATA;
+                        else
+                            status_mode = Utils.STATUS_PHASE_DATA;
 
-                    sendStrByte(uartCmd.get_tempture);
+                        sendStrByte(uartCmd.get_tempture);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        DataLog.e("exception:" + e.toString());
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    e.printStackTrace();
-                    DataLog.e("exception:" + e.toString());
+                    if(header.equals("0E"))
+                    {
+                        int err = data[1] & 0xFF;
+                        switch (err)
+                        {
+                            case 131: // 0x83
+                                addToList("distance out of range");
+                                break;
+                            case 132: // 0x84
+                                addToList("cmd not found");
+                                break;
+                            case 133: // 0x85
+                                addToList("laser not enable");
+                                break;
+                            case 134: // 0x86
+                                addToList("device params not found");
+                                break;
+                            case 135: // 0x87
+                                addToList("wait for cmd repeat");
+                                break;
+                            case 136: // 0x88
+                                addToList("ID exist");
+                                break;
+                            case 137: // 0x89
+                                addToList("Low SNR");
+                                break;
+                        }
+
+                        if(status_mode == Utils.STATUS_INIT || status_mode == Utils.STATUS_MEASURE)
+                        {
+                            btnOn.setEnabled(true);
+                            btnOff.setEnabled(true);
+                            btnCal.setEnabled(true);
+                            BtnShots.setEnabled(true);
+                            btnOn.setText("Laser On");
+                            status_mode = Utils.STATUS_INIT ;
+                        }
+
+                        if(status_mode == Utils.STATUS_SHOTS )
+                        {
+                            cnt++;
+
+                            if(cnt < CNT_MAX)
+                            {
+                                //send("O");
+                                sendStrByte(uartCmd.get_multi_distance);
+                            }
+                            else
+                            {
+                                //send("D");
+                                sendStrByte(uartCmd.get_single_distance);
+                                cnt = 0;
+                                status_mode = Utils.STATUS_INIT;
+
+                                btnOn.setEnabled(true);
+                                btnOff.setEnabled(true);
+                                btnCal.setEnabled(true);
+                                BtnShots.setEnabled(true);
+                                btnOn.setText("Laser On");
+                            }
+                        }
+
+                    }
                 }
             }
-            else
+            break;
+            case Utils.STATUS_PHASE_DATA:
+            case Utils.STATUS_TEMP_DATA:
             {
-                if(header.equals("0E"))
+                // get pahse data
+                String header = Character.toString(debug.charAt(0)) +   Character.toString(debug.charAt(1));
+                if(header.equals("FA"))
                 {
-                    int err = data[1] & 0xFF;
-                    switch (err)
-                    {
-                        case 131: // 0x83
-                            addToList("distance out of range");
-                            break;
-                        case 132: // 0x84
-                            addToList("cmd not found");
-                            break;
-                        case 133: // 0x85
-                            addToList("laser not enable");
-                            break;
-                        case 134: // 0x86
-                            addToList("device params not found");
-                            break;
-                        case 135: // 0x87
-                            addToList("wait for cmd repeat");
-                            break;
-                        case 136: // 0x88
-                            addToList("ID exist");
-                            break;
-                        case 137: // 0x89
-                            addToList("Low SNR");
-                            break;
-                    }
+                    int len = data[1] << 8 | data[2] ;
+                    DataLog.e("len:" + len);
 
-                    if(status_mode == 0 || status_mode == 2)
+                    if(len == 5)
                     {
-                        btnOn.setEnabled(true);
-                        btnOff.setEnabled(true);
-                        btnCal.setEnabled(true);
-                        BtnShots.setEnabled(true);
-                        btnOn.setText("Laser On");
-                        status_mode = 0;
-                    }
-
-                    if(status_mode == 3)
-                    {
-                        cnt++;
-
-                        if(cnt < CNT_MAX)
+                        try
                         {
-                            //send("O");
-                            sendStrByte(uartCmd.get_multi_distance);
+                            long temp =(data[4] << 8) & 0xFF00;
+                            temp += data[3] & 0xFF;
+                            DataLog.e( "temp:" + temp);
+
+                            String t_org = Long.toString(temp);
+                            double tempture = Double.valueOf(t_org);
+
+                            String ttt = "--> t:" + Double.valueOf(tempture)+ "\n";
+                            receiveText.append(ttt);
+
+                            DataLog.e("id:" + tmp_list.getId());
+                            DataLog.e("dis:" + tmp_list.getDis());
+
+                            ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),String.format("%1.0f",Double.valueOf(tempture)));
+                            measureList.add(list);
+                            listAdapter.notifyDataSetChanged();
                         }
-                        else
+                        catch (Exception e)
                         {
-                            //send("D");
-                            sendStrByte(uartCmd.get_single_distance);
-                            cnt = 0;
-                            status_mode = 0;
+                            e.printStackTrace();
+                            DataLog.e("exception:" + e.toString());
+
+                            ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
+                            measureList.add(list);
+                            listAdapter.notifyDataSetChanged();
 
                             btnOn.setEnabled(true);
                             btnOff.setEnabled(true);
                             btnCal.setEnabled(true);
                             BtnShots.setEnabled(true);
                             btnOn.setText("Laser On");
+                            status_mode = Utils.STATUS_INIT;
                         }
                     }
+                }
+                else if(header.equals("0E"))
+                {
+                    String err_code = Character.toString(debug.charAt(1));
+                    if(err_code.equals("82"))
+                    {
+                        status_mode = Utils.STATUS_DEBUG_MODE;
+                        sendStrByte(uartCmd.enter_debug_mode);
+                    }
 
+                    ListMeasure list = new ListMeasure(tmp_list.getId(),tmp_list.getDis(),"ERR");
+                    measureList.add(list);
+                    listAdapter.notifyDataSetChanged();
+                }
+
+                if(status_mode == Utils.STATUS_PHASE_DATA)
+                {
+                    btnOn.setEnabled(true);
+                    btnOff.setEnabled(true);
+                    btnCal.setEnabled(true);
+                    BtnShots.setEnabled(true);
+                    btnOn.setText("Laser On");
+                    status_mode = Utils.STATUS_INIT;
+                }
+                else
+                {
+                    cnt++;
+                    if(cnt < CNT_MAX)
+                    {
+                        status_mode = Utils.STATUS_SHOTS;
+                        sendStrByte(uartCmd.get_multi_distance);
+                    }
+                    else
+                    {
+                        sendStrByte(uartCmd.get_single_distance);
+                        cnt = 0;
+                        status_mode = Utils.STATUS_INIT;
+
+                        btnOn.setEnabled(true);
+                        btnOff.setEnabled(true);
+                        btnCal.setEnabled(true);
+                        BtnShots.setEnabled(true);
+                        btnOn.setText("Laser On");
+                    }
                 }
             }
-        }
-        else if(status_mode == 6)
-        {
-            //sendByte(DEBUG_MODE);
-            sendStrByte(uartCmd.get_version);
-            status_mode = 5;
-        }
-        else if(status_mode == 5)
-        {
-            DataLog.e("mode = 5, len:" + String.valueOf(data[2]));
-            if(data[2] == 0x07)
+            break;
+            case Utils.STATUS_CALIB:
             {
-                byte[] tmp = {data[5]};
-                String str_ver = String.valueOf(data[3]) + "." + String.valueOf(data[4]) +  ConversionUtils.bytesToString(tmp)
-                        + "-20" + String.valueOf(data[6])
-                        + "/" + String.valueOf(data[7])
-                        + "/" + String.valueOf(data[8]);
-
-                tv_status.setText("Connected");
-                tv_ver.setText(str_ver);
-                status_mode = 0;
-                tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
-            }
-            else if(data[2] == 0x01)
-            {
-                //status_mode = 0;
-               // sendStrByte(uartCmd.get_version);
-                DataLog.e("Enter debug mode");
-            }
-        }
-        else if(status_mode == 0 || status_mode == 2)
-        {
-            if(debug.contains("FA 00 01 01"))
-            {
+                status_mode = Utils.STATUS_INIT;
+                // Calibration done.
                 btnOn.setEnabled(true);
                 btnOff.setEnabled(true);
                 btnCal.setEnabled(true);
                 BtnShots.setEnabled(true);
-                btnOn.setText("Laser On");
-                status_mode = 0;
             }
+            break;
+            case Utils.STATUS_DEBUG_MODE:
+            {
+                if(data[2] == 0x01)
+                {
+                    DataLog.e("Enter debug mode");
+                    sendStrByte(uartCmd.get_version);
+                    status_mode = Utils.STATUS_VERSION_DATA;
+                }
+            }
+            break;
+            case Utils.STATUS_VERSION_DATA:
+            {
+                DataLog.e("get version");
+                if(data[2] == 0x07)
+                {
+                    byte[] tmp = {data[5]};
+                    String str_ver = String.valueOf(data[3]) + "." + String.valueOf(data[4]) +  ConversionUtils.bytesToString(tmp)
+                            + "-20" + String.valueOf(data[6])
+                            + "/" + String.valueOf(data[7])
+                            + "/" + String.valueOf(data[8]);
+
+                    tv_status.setText("Connected");
+                    tv_ver.setText(str_ver);
+                    status_mode = Utils.STATUS_INIT;
+                    tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
+                    timerHandler.removeCallbacks(timerRunnable);
+                }
+                else
+                {
+                    status_mode = Utils.STATUS_DEBUG_MODE;
+                    sendStrByte(uartCmd.enter_debug_mode);
+                }
+            }
+            break;
         }
-        else if(status_mode == 4)
-        {
-            status_mode = 0;
-            // Calibration done.
-            btnOn.setEnabled(true);
-            btnOff.setEnabled(true);
-            btnCal.setEnabled(true);
-            BtnShots.setEnabled(true);
-        }
+
     }
 
     void detected (String str)
     {
- //       tv_status.setText(str);
- //       tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
-        DataLog.e("detected -- string");
-        sendStrByte(uartCmd.enter_debug_mode);
-        status_mode = 5;
+        initialStart = false;
+        connect(null);
+        DataLog.e("detected --" + str);
     }
 
     void lost (String str)
@@ -1080,16 +1094,13 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     //    private byte[] DEBUG_MODE = {(byte)0xCD,(byte)0x05,(byte)0x3C,(byte)0xA0,(byte)0xE1,(byte)0x0D,(byte)0x0A};
     @Override
     public void onSerialConnect() {
- //       status("Connected");
-
         DataLog.e("onSerialConnect ---");
-
         connected = TestScreen.Connected.True;
-//        tv_status.setBackgroundColor(getResources().getColor(R.color.colorRecieveText));
 
-        //sendStrByte(uartCmd.get_version);
+        tv_status.setText("Connecting....");
+        tv_status.setBackgroundColor(getResources().getColor(R.color.orange));
         sendStrByte(uartCmd.enter_debug_mode);
-        status_mode = 5;
+        status_mode = Utils.STATUS_DEBUG_MODE;
         timerHandler.postDelayed(timerRunnable, 100);
     }
 
@@ -1097,8 +1108,17 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            DataLog.e("get version");
-            sendStrByte(uartCmd.get_version);
+            if(status_mode == Utils.STATUS_DEBUG_MODE)
+            {
+                sendStrByte(uartCmd.enter_debug_mode);
+                timerHandler.postDelayed(timerRunnable, 100);
+            }
+            else if(status_mode == Utils.STATUS_VERSION_DATA)
+            {
+                sendStrByte(uartCmd.get_version);
+                timerHandler.postDelayed(timerRunnable, 100);
+            }
+
         }
     };
 
