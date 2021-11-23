@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener
 {
-    public static  Activity activity;
-    public static Context context = null;
+   // public static  Activity activity;
+   // public static Context context = null;
     public static String path;
     private TestScreen mCurFragment;
 
@@ -26,15 +26,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = this;
-        activity  = this;
         path = getFilePath();
 
         Log.e("Awei","path:" + path);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (savedInstanceState == null)
         {
-            mCurFragment = new TestScreen();
+            mCurFragment = new TestScreen(this,this);
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new MainScreen(), "devices").commit();
             getSupportFragmentManager().beginTransaction().add(R.id.fragment, mCurFragment, "devices").commit();
             //getSupportFragmentManager().beginTransaction().add(R.id.fragment, new DevicesFragment(), "devices").commit();
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
 
     public boolean hasPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{permission}, 1);
             return true;
         } else {

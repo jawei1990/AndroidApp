@@ -50,10 +50,12 @@ public class measureAdapter extends BaseAdapter
         ListMeasure item = (ListMeasure) getItem(position);
         TextView tv_id = (TextView) v.findViewById(R.id.mea_tv_id);
         TextView tv_dis = (TextView) v.findViewById(R.id.men_tv_dis);
+        TextView tv_temp = (TextView) v.findViewById(R.id.men_tv_tmp);
         TextView tv_times = (TextView) v.findViewById(R.id.men_tv_time);
 
         tv_id.setText(item.getId());
         tv_dis.setText(item.getDis());
+        tv_temp.setText(item.getTemp());
         tv_times.setText(item.getTimes());
 
         return v;
