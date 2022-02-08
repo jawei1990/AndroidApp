@@ -1,0 +1,56 @@
+<resources>
+    <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">YoloV4-Tiny</string>
+    <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
+
+    <string-array name="spinner_string">
+        <item>0124 x 3 Class x 320</item>
+        <item>0124 x 3 Class</item>
+        <item>0124 x 3 Class with background</item>
+        <item>0112 Database 416 x 3 Class</item>
+        <item>0916 niou 115</item>
+        <item>1027 decay default(0.05)</item>
+        <item>1027 decay default(0.5)</item>
+        <item>0105 Database 416</item>
+        <item>0105 Database 320</item>
+        <item>0105 Database 256</item>
+    </string-array>
+
+    <string-array name="tflite_file">
+        <item>0124_ciou_005_3clas_white_320_best.tflite</item>
+        <item>0124_ciou_005_3clas_white_best.tflite</item>
+        <item>0124_ciou_005_3clas_best.tflite</item>
+        <item>0112_ciou_005_best.tflite</item>
+        <item>0916_niou_115.tflite</item>
+        <item>1026_ciou_2_best.tflite</item>
+        <item>1026_ciou_3_best.tflite</item>
+        <item>0105_ciou_416_best.tflite</item>
+        <item>0105_ciou_320_best.tflite</item>
+        <item>0105_ciou_256_best.tflite</item>
+    </string-array>
+
+    <string-array name="image_size">
+        <item>320</item>
+        <item>416</item>
+        <item>416</item>
+        <item>416</item>
+        <item>416</item>
+        <item>416</item>
+        <item>416</item>
+        <item>320</item>
+        <item>256</item>
+    </string-array>
+
+    <string-array name="label_file">
+        <item>file:///android_asset/custom_3_class.txt</item>
+        <item>file:///android_asset/custom_3_class.txt</item>
+        <item>file:///android_asset/custom_3_class.txt</item>
+        <item>file:///android_asset/custom_3_class.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+        <item>file:///android_asset/custom.txt</item>
+    </string-array>
+
+</resources>
