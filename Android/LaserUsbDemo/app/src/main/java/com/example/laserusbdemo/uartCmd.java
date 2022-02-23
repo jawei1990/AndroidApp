@@ -21,4 +21,6 @@ public interface uartCmd {
 
     final String enable_phase_correction = "CD1107000119";
     final String disable_phase_correction = "CD1107000018";
+
+    final String save_env = "CD0A030D";
 }

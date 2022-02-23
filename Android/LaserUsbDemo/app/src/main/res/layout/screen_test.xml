@@ -206,7 +206,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="700px"
+                        android:layout_height="1000px"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -346,6 +346,56 @@
                                 android:textOff="Phase off"
                                 android:textOn="Phase on"
                                 android:textSize="14dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="250px"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="50px"
+                                android:text="grade:" />
+
+                            <Spinner
+                                android:id="@+id/sp_grade_c"
+                                android:layout_width="350px"
+                                android:layout_height="250px"
+                                android:layout_marginLeft="10px"
+                                android:textColor="@color/black"
+                                android:textSize="10dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="volt:" />
+
+                            <EditText
+                                android:id="@+id/ed_volt"
+                                android:layout_width="300px"
+                                android:layout_height="200px"
+                                android:layout_gravity="center"
+                                android:inputType="number"
+                                android:textColor="@color/black" />
+
+                            <Button
+                                android:id="@+id/btnSet"
+                                android:layout_width="200px"
+                                android:layout_height="200px"
+                                android:layout_gravity="center"
+                                android:text="Set" />
+
+                            <Button
+                                android:id="@+id/btnSaveEnv"
+                                android:layout_width="300px"
+                                android:layout_height="200px"
+                                android:layout_gravity="center"
+                                android:text="Save Env" />
+
                         </LinearLayout>
 
                         <RelativeLayout

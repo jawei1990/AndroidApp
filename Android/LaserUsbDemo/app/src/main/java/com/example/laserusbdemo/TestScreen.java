@@ -68,11 +68,11 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
     private LinearLayout botLayout;
     private TextView tv_status,tv_ver,tvAppVer;
-    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,btnForce;
+    private Button btnOn,btnOff, btnCal,btnCleanDis,btnOutput,BtnShots,BtnGradeSet,btnForce,BtnVoltSet,BtnSaveEnv;
     private ToggleButton btnDisEn,btnPhase;
-    private EditText ed_sub,ed_device,ed_real;
+    private EditText ed_sub,ed_device,ed_real,ed_dac_volt;
     private ListView listView;
-    private Spinner spinner,grade;
+    private Spinner spinner,grade,volt_grade;
     private measureAdapter listAdapter;
     private List<ListMeasure> measureList = new ArrayList<>();
 
@@ -249,7 +249,7 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
     private final int CNT_MAX = 5;
     private int cnt;
     private int grade_idx, dac_grade_idx;
-    private ArrayAdapter<CharSequence> adapter,grade_adapter;
+    private ArrayAdapter<CharSequence> adapter,grade_adapter,voltGrade_adapter;
     private int offset = 0;
     //   private int onStatus = 0; // on = 0, measure = 1
     @Override
@@ -313,18 +313,88 @@ public class TestScreen extends Fragment implements ServiceConnection, SerialLis
 
         dac_grade_idx = 0;
 
+        volt_grade = view.findViewById(R.id.sp_grade_c);
+        voltGrade_adapter =  ArrayAdapter.createFromResource(context,
+                R.array.grade_class,
+                android.R.layout.simple_spinner_item);
+
+        voltGrade_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        volt_grade.setAdapter(voltGrade_adapter);
+        dac_grade_idx = 0;
+        volt_grade.setSelection(dac_grade_idx, false);
+        volt_grade.setOnItemSelectedListener(dacGradeOnItemSelected);
+
+        ed_dac_volt = view.findViewById(R.id.ed_volt);
+
         listAdapter = new measureAdapter(context,measureList);
         listView = view.findViewById(R.id.dis_list);
         listView.setAdapter(listAdapter);
-
 
         btnOn = view.findViewById(R.id.btnLaserOn);
         btnOff = view.findViewById(R.id.btnLaserOff);
         btnCal = view.findViewById(R.id.btnCali);
         BtnShots = view.findViewById(R.id.btnShots);
         BtnGradeSet = view.findViewById(R.id.btnSetGrade);
+        BtnVoltSet = view.findViewById(R.id.btnSet);
         btnDisEn = view.findViewById(R.id.btnDisEn);
         btnPhase = view.findViewById(R.id.btnPhase);
+        BtnSaveEnv = view.findViewById(R.id.btnSaveEnv);
+
+        BtnSaveEnv.setOnClickListener(view1 ->
+        {
+            if (connected == Connected.True)
+            {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+                alertBuilder.setTitle("環境變數存取");
+                alertBuilder.setMessage("確定存取laser 環境變數");
+                alertBuilder.setNegativeButton("No",null);
+                alertBuilder.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sendStrByte(uartCmd.save_env);
+                        Toast.makeText(context,"已存取環境變數",Toast.LENGTH_LONG).show();
+                    }
+                });
+                alertBuilder.show();
+            }
+            else
+            {
+                Toast.makeText(context,"裝置未連線",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        BtnVoltSet.setOnClickListener(v->
+        {
+            try
+            {
+                String dacStr = ed_dac_volt.getText().toString();
+                int data = Integer.valueOf(dacStr);
+                if(!dacStr.equals("") && (data >= 0 && data <=4095 ))
+                {
+                    String txStr = "";//"-setenv:";
+                    if(dac_grade_idx == 0)
+                    {
+                        //txStr+= "laser_dac_grade2," + dacStr;
+                        txStr = "CD1101";
+                    }
+                    else if(dac_grade_idx == 1)
+                    {
+                        //txStr+= "laser_dac_grade3," + dacStr;
+                        txStr = "CD1102";
+                    }
+
+                    Log.e("Awei","Set:" + txStr);
+                    send(txStr);
+                }
+                else
+                    Toast.makeText(context,"錯誤設置參數",Toast.LENGTH_LONG).show();
+            }
+            catch (Exception e)
+            {
+                Toast.makeText(context,"錯誤設置參數",Toast.LENGTH_LONG).show();
+            }
+
+        });
 
         btnCleanDis = view.findViewById(R.id.btnCleanDis);
         btnOutput = view.findViewById(R.id.btnLogOutPut);
